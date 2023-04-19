@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import subprocess
 
 iota_counter = 0
 
@@ -31,11 +32,11 @@ def minus():
 def dump():
     return (OP_DUMP, )
 
-def simulate_program(program):
+def simulate_program(program: list):
     stack = []
 
     for operator in program:
-        assert COUNT_OPS == 4, "Exhaustive handling of operations in simulation"
+        assert COUNT_OPS == 4, 'Exhaustive handling of operations in simulation'
 
         if operator[0] == OP_PUSH:
             stack.append(operator[1])
@@ -55,10 +56,28 @@ def simulate_program(program):
             print(x)
 
         else:
-            assert False, "unreachable"
+            assert False, 'unreachable'
 
-def compile_program(program):
-    assert False, "Not implemented"
+def compile_program(program, out_file_path):
+    with open(out_file_path, "w") as out:
+        # Push code in assembly
+        out.write('segment .text\n')
+        out.write('global _start\n')
+        out.write('_start:\n')
+
+        for operation in program:
+            # Push code in assembly
+            if operation[0] == OP_PUSH:
+                out.write(f'    ;;-- push {operation[1]} --\n')
+                out.write(f'    push{operation[1]}\n')
+
+            elif operation[0] == OP_PLUS:
+                out.write(f'    ;;-- plus {operation[1]} --\n')
+                out.write(f'    ;;-- Not implemented --\n')
+
+        out.write('    mov rax, 60\n')
+        out.write('    mov rdi, 0\n')
+        out.write('    syscall\n')
 
 # Unhardcode program
 program = [
@@ -84,24 +103,20 @@ def usage_mode():
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(usage_mode.__doc__)
-        print("ERROR: no subcommand is proiveded")
+        print('ERROR: no subcommand is proiveded')
         exit(1)
 
     subcommand = sys.argv[1]
-    
-    if subcommand == "ssp":
+
+    if subcommand == 'ssp':
         simulate_program(program)
-    elif subcommand == "scp":
-        with open("output.asm") as out:
-            out.write("segment .text\n")
-            out.write("global _start\n")
-            out.write("_start:\n")
-            out.write("    mov rax, 60\n")
-            out.write("    mov rdi, 0\n")
-            out.write("    syscall\n")
-            #compile_program(program)
+
+    elif subcommand == 'scp':
+        compile_program(program, 'test/test.asm')
+        subprocess.call(['nasm', '-felf64', 'test/test.asm'])
+        subprocess.call(['ld', '-o', 'test/output', 'test/test.o'])
+
     else:
         print(usage_mode.__doc__)
-        print(f"\nERROR!: unknown subcommand: \"{subcommand}\"")
+        print(f'\nERROR!: unknown subcommand: \"{subcommand}\"')
         exit(1)
-

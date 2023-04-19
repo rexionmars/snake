@@ -1,6 +1,6 @@
 <img src="thumbnail/snake_banner.jpg" alt="Snake logo">
 SNAKE is a Concatenative Stack-Oriented Programming Language for Computers.
-_This will be updated soon_
+This will be updated soon
 
 ## What is a Stack-based programming language?
 

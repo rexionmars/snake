@@ -23,7 +23,7 @@ COUNT_OPS = iota()
 def push(x):
     return (OP_PUSH, x)
 
-def plus():
+def plus() -> tuple:
     return (OP_PLUS, )
 
 def minus():
@@ -66,10 +66,10 @@ def compile_program(program, out_file_path):
         out.write('_start:\n')
 
         for operation in program:
-            # Push code in assembly
+            print(operation)
             if operation[0] == OP_PUSH:
                 out.write(f'    ;;-- push {operation[1]} --\n')
-                out.write(f'    push{operation[1]}\n')
+                out.write(f'    push {operation[1]}\n')
 
             elif operation[0] == OP_PLUS:
                 out.write(f'    ;;-- plus {operation[1]} --\n')
@@ -78,6 +78,17 @@ def compile_program(program, out_file_path):
         out.write('    mov rax, 60\n')
         out.write('    mov rdi, 0\n')
         out.write('    syscall\n')
+
+# this usage function is for test compile_program without params
+def compile_program_test():
+    with open('test/test.asm', 'w') as out:
+        out.write("segment .text\n")
+        out.write("global _start\n")
+        out.write("_start:\n")
+        out.write('    mov rax, 60\n')
+        out.write('    mov rdi, 0\n')
+        out.write('    syscall\n')
+
 
 # Unhardcode program
 program = [
@@ -92,12 +103,11 @@ program = [
 ]
 
 def usage_mode():
-    """
-    Usage: snake <SUBCOMMAND> [ARGS]
+    """\nUsage: snake <SUBCOMMAND> [ARGS]
 
     SUBCOMMANDS:
-    ssp  --->  Simulate the program
-    scp  --->  Compile the program
+    test            Simulate the program
+    compile         Compile the program
     """
 
 if __name__ == '__main__':
@@ -108,10 +118,10 @@ if __name__ == '__main__':
 
     subcommand = sys.argv[1]
 
-    if subcommand == 'ssp':
+    if subcommand == 'test':
         simulate_program(program)
 
-    elif subcommand == 'scp':
+    elif subcommand == 'compile':
         compile_program(program, 'test/test.asm')
         subprocess.call(['nasm', '-felf64', 'test/test.asm'])
         subprocess.call(['ld', '-o', 'test/output', 'test/test.o'])

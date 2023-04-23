@@ -60,35 +60,31 @@ def simulate_program(program: list):
 
 def compile_program(program, out_file_path):
     with open(out_file_path, "w") as out:
-        # Push code in assembly
         out.write('segment .text\n')
         out.write('global _start\n')
         out.write('_start:\n')
 
         for operation in program:
-            print(operation)
+            assert COUNT_OPS == 4, 'Exhaustive handling of operations in compilation'
             if operation[0] == OP_PUSH:
-                out.write(f'    ;;-- push {operation[1]} --\n')
-                out.write(f'    push {operation[1]}\n')
+                out.write('    ;;-- push %d --\n' %operation[1])
+                out.write('    push %d\n' %operation[1])
 
             elif operation[0] == OP_PLUS:
-                out.write(f'    ;;-- plus {operation[1]} --\n')
-                out.write(f'    ;;-- Not implemented --\n')
+                out.write('    ;;-- plus %d --\n')
+                out.write('    ;;-- Not implemented --\n')
+            elif operation[0] == OP_MINUS:
+                out.write('    ;;-- minus %d --\n')
+                out.write('    ;;-- Not implemented --\n')
+            elif operation[0] == OP_DUMP:
+                out.write('    ;; -- dump --\n')
+            else:
+                assert False, "unreachable"
+
 
         out.write('    mov rax, 60\n')
         out.write('    mov rdi, 0\n')
         out.write('    syscall\n')
-
-# this usage function is for test compile_program without params
-def compile_program_test():
-    with open('test/test.asm', 'w') as out:
-        out.write("segment .text\n")
-        out.write("global _start\n")
-        out.write("_start:\n")
-        out.write('    mov rax, 60\n')
-        out.write('    mov rdi, 0\n')
-        out.write('    syscall\n')
-
 
 # Unhardcode program
 program = [

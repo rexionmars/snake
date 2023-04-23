@@ -1,5 +1,10 @@
 ## Usage mode
 ```sh
-ssp -> Snake Simulate Program
-scp -> Snake Compile Program
+test       Snake Simulate Program
+compile    Snake Compile Program
+```
+
+## Example
+```sh
+run snake.py compile <ARGS>
 ```

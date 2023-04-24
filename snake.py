@@ -62,20 +62,21 @@ def simulate_program(program):
 
 def compile_program(program, out_file_path):
     # Hardcode injection code in assembly
+    # This code in assembly is not exhaustive tested
     with open(out_file_path, "w") as out:
         out.write('segment .text\n')
-        out.write(f'dump(unsigned long):\n')
+        out.write(f'dump:\n')
         out.write(f'    push    rbp\n')
         out.write(f'    mov     rbp, rsp\n')
         out.write(f'    sub     rsp, 64\n')
-        out.write(f'    mov     QWORD PTR [rbp-56], rdi\n')
-        out.write(f'    mov     QWORD PTR [rbp-8], 1\n')
+        out.write(f'    mov     QWORD [rbp-56], rdi\n')
+        out.write(f'    mov     QWORD [rbp-8], 1\n')
         out.write(f'    mov     eax, 32\n')
-        out.write(f'    sub     rax, QWORD PTR [rbp-8]\n')
-        out.write(f'    mov     BYTE PTR [rbp-48+rax], 10\n')
-        out.write(f'.L2:\n')
-        out.write(f'    mov     rcx, QWORD PTR [rbp-56]\n')
-        out.write(f'    movabs  rdx, -3689348814741910323\n')
+        out.write(f'    sub     rax, QWORD [rbp-8]\n')
+        out.write(f'    mov     BYTE  [rbp-48+rax], 10\n')
+        out.write('.L2:\n')
+        out.write(f'    mov     rcx, QWORD [rbp-56]\n')
+        out.write(f'    mov     r9, -3689348814741910323\n')
         out.write(f'    mov     rax, rcx\n')
         out.write(f'    mul     rdx\n')
         out.write(f'    shr     rdx, 3\n')
@@ -88,29 +89,30 @@ def compile_program(program, out_file_path):
         out.write(f'    mov     eax, edx\n')
         out.write(f'    lea     edx, [rax+48]\n')
         out.write(f'    mov     eax, 31\n')
-        out.write(f'    sub     rax, QWORD PTR [rbp-8]\n')
-        out.write(f'    mov     BYTE PTR [rbp-48+rax], dl\n')
-        out.write(f'    add     QWORD PTR [rbp-8], 1\n')
-        out.write(f'    mov     rax, QWORD PTR [rbp-56]\n')
-        out.write(f'    movabs  rdx, -3689348814741910323\n')
+        out.write(f'    sub     rax, QWORD [rbp-8]\n')
+        out.write(f'    mov     BYTE  [rbp-48+rax], dl\n')
+        out.write(f'    add     QWORD  [rbp-8], 1\n')
+        out.write(f'    mov     rax, QWORD [rbp-56]\n')
+        out.write(f'    mov     r9, -3689348814741910323\n')
         out.write(f'    mul     rdx\n')
         out.write(f'    mov     rax, rdx\n')
         out.write(f'    shr     rax, 3\n')
-        out.write(f'    mov     QWORD PTR [rbp-56], rax\n')
-        out.write(f'    cmp     QWORD PTR [rbp-56], 0\n')
+        out.write(f'    mov     QWORD [rbp-56], rax\n')
+        out.write(f'    cmp     QWORD [rbp-56], 0\n')
         out.write(f'    jne     .L2\n')
         out.write(f'    mov     eax, 32\n')
-        out.write(f'    sub     rax, QWORD PTR [rbp-8]\n')
+        out.write(f'    sub     rax, QWORD [rbp-8]\n')
         out.write(f'    lea     rdx, [rbp-48]\n')
         out.write(f'    lea     rcx, [rdx+rax]\n')
-        out.write(f'    mov     rax, QWORD PTR [rbp-8]\n')
+        out.write(f'    mov     rax, QWORD [rbp-8]\n')
         out.write(f'    mov     rdx, rax\n')
         out.write(f'    mov     rsi, rcx\n')
         out.write(f'    mov     edi, 1\n')
-        out.write(f'    call    write\n')
-        out.write(f'    nop\n')
-        out.write(f'    leave\n')
-        out.write(f'    ret\n')
+        out.write(f'call    write\n')
+        out.write(f'nop\n')
+        out.write(f'leave\n')
+        out.write(f'ret\n')
+
         out.write('global _start\n')
         out.write('_start:\n')
 
@@ -160,7 +162,7 @@ def usage_mode():
     """Usage: snake <SUBCOMMAND> <ARGS>
 
     SUBCOMMANDS:
-    test            Simulate the program
+    run             Simulate the program
     compile         Compile the program
     """
 
@@ -176,7 +178,7 @@ if __name__ == '__main__':
 
     subcommand = sys.argv[1]
 
-    if subcommand == 'test':
+    if subcommand == 'run':
         simulate_program(program)
 
     elif subcommand == 'compile':

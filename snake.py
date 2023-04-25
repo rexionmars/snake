@@ -22,7 +22,7 @@ OP_MINUS = iota()
 OP_DUMP = iota()
 COUNT_OPS = iota()
 
-def push(x):
+def push(x) -> tuple:
     return (OP_PUSH, x)
 
 def plus() -> tuple:
@@ -76,7 +76,7 @@ def compile_program(program, out_file_path):
         out.write(f'    mov     BYTE  [rbp-48+rax], 10\n')
         out.write('.L2:\n')
         out.write(f'    mov     rcx, QWORD [rbp-56]\n')
-        out.write(f'    mov     r9, -3689348814741910323\n')
+        out.write(f'    mov     rdx, -3689348814741910323\n')
         out.write(f'    mov     rax, rcx\n')
         out.write(f'    mul     rdx\n')
         out.write(f'    shr     rdx, 3\n')
@@ -93,7 +93,7 @@ def compile_program(program, out_file_path):
         out.write(f'    mov     BYTE  [rbp-48+rax], dl\n')
         out.write(f'    add     QWORD  [rbp-8], 1\n')
         out.write(f'    mov     rax, QWORD [rbp-56]\n')
-        out.write(f'    mov     r9, -3689348814741910323\n')
+        out.write(f'    mov     rdx, -3689348814741910323\n')
         out.write(f'    mul     rdx\n')
         out.write(f'    mov     rax, rdx\n')
         out.write(f'    shr     rax, 3\n')
@@ -108,7 +108,8 @@ def compile_program(program, out_file_path):
         out.write(f'    mov     rdx, rax\n')
         out.write(f'    mov     rsi, rcx\n')
         out.write(f'    mov     edi, 1\n')
-        out.write(f'call    write\n')
+        out.write(f'    mov     rax, 1\n')
+        out.write(f'    syscall\n')
         out.write(f'nop\n')
         out.write(f'leave\n')
         out.write(f'ret\n')
@@ -132,8 +133,8 @@ def compile_program(program, out_file_path):
                 out.write('    ;;-- minus --\n')
                 out.write('    pop rax\n')
                 out.write('    pop rbx\n')
-                out.write('    sub rax, rbx\n')
-                out.write('    push rax\n')
+                out.write('    sub rbx, rax\n')
+                out.write('    push rbx\n')
             elif operation[0] == OP_DUMP:
                 out.write('    ;; -- dump --\n')
                 out.write('    pop rdi\n')

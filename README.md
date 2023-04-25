@@ -1,3 +1,9 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![](https://img.shields.io/github/languages/count/whoisleonardi/snake-lang?color=red)
+![](https://img.shields.io/github/issues-pr/whoisleonardi/snake-lang)
+![](https://img.shields.io/github/issues/whoisleonardi/snake-lang?color=pink)
+![](https://img.shields.io/github/issues-pr/whoisleonardi/snake-lang?color=orange)
+
 <img src="thumbnail/snake_banner.jpg" alt="Snake logo">
 SNAKE is a Concatenative Stack-Oriented Programming Language for Computers.
 This will be updated soon

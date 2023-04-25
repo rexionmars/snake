@@ -11,3 +11,17 @@ This approach is commonly used in functional programming languages, such as the 
 A stack-based programming language is useful in situations where the execution stack is a natural and efficient way to store and manipulate data. For example, it can be used to simplify the implementation of mathematical calculations, which involve a series of operations that are performed on a stack of data. In addition, the stack approach can be used to simplify the flow control of a program, since the stack manipulation can be used to control the execution of subroutines and loops in a very efficient way.
 
 **WARNING! THIS LANGUAGE IS A WORK IN PROGRESS! ANYTHING CAN CHANGE AT ANY MOMENT WITHOUT ANY NOTICE! USE THIS LANGUAGE AT YOUR OWN RISK!**
+
+## Quick started
+Sanake has two modes of operation, the first mode to Simulate the program, and the second mode to Compile the program
+```sh
+$ python3 snake.py run
+```
+or compile the program
+```sh
+$ python3 snake.py compile
+```
+this will generate an x86_64 Linux executable, in the tests folder
+```sh
+$ cd tests && ./output
+```

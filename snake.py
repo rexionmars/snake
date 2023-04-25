@@ -22,16 +22,16 @@ OP_MINUS = iota()
 OP_DUMP = iota()
 COUNT_OPS = iota()
 
-def push(x) -> tuple:
+def push(x):
     return (OP_PUSH, x)
 
-def plus() -> tuple:
+def plus():
     return (OP_PLUS, )
 
-def minus() -> tuple:
+def minus():
     return (OP_MINUS, )
 
-def dump() -> tuple:
+def dump():
     return (OP_DUMP, )
 
 def simulate_program(program):
@@ -113,7 +113,6 @@ def compile_program(program, out_file_path):
         out.write(f'nop\n')
         out.write(f'leave\n')
         out.write(f'ret\n')
-
         out.write('global _start\n')
         out.write('_start:\n')
 

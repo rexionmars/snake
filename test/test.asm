@@ -10,7 +10,7 @@ dump:
     mov     BYTE  [rbp-48+rax], 10
 .L2:
     mov     rcx, QWORD [rbp-56]
-    mov     r9, -3689348814741910323
+    mov     rdx, -3689348814741910323
     mov     rax, rcx
     mul     rdx
     shr     rdx, 3
@@ -27,7 +27,7 @@ dump:
     mov     BYTE  [rbp-48+rax], dl
     add     QWORD  [rbp-8], 1
     mov     rax, QWORD [rbp-56]
-    mov     r9, -3689348814741910323
+    mov     rdx, -3689348814741910323
     mul     rdx
     mov     rax, rdx
     shr     rax, 3
@@ -42,7 +42,8 @@ dump:
     mov     rdx, rax
     mov     rsi, rcx
     mov     edi, 1
-call    write
+    mov     rax, 1
+    syscall
 nop
 leave
 ret
@@ -67,8 +68,8 @@ _start:
     ;;-- minus --
     pop rax
     pop rbx
-    sub rax, rbx
-    push rax
+    sub rbx, rax
+    push rbx
     ;; -- dump --
     pop rdi
     call dump

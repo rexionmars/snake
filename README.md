@@ -19,13 +19,18 @@ A stack-based programming language is useful in situations where the execution s
 **WARNING! THIS LANGUAGE IS A WORK IN PROGRESS! ANYTHING CAN CHANGE AT ANY MOMENT WITHOUT ANY NOTICE! USE THIS LANGUAGE AT YOUR OWN RISK!**
 
 ## Quick Start
-Sanake has two modes of operation, the first mode to Simulate the program, and the second mode to Compile the program
+Sanake has two modes of operation, the first mode to Simulate the program, and the second mode to Compile the program.<br><br>
+SNAKE without parameters returns the help menu
 ```sh
-$ python3 snake.py run
+$ ./snake.py
+```
+simulate program
+```sh
+$ ./snake.py --no-build <args>
 ```
 or compile the program
 ```sh
-$ python3 snake.py compile
+$ ./snake.py --compile <args>
 ```
 this will generate an x86_64 Linux executable, in the tests folder
 ```sh

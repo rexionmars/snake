@@ -38,7 +38,7 @@ $ cd tests && ./output
 ```
 
 A simple example using PUSH, PLUS, MINUS, DUMP<br>
-Use your favorite editor, i lovel neovim
+Use your favorite editor, i love neovim
 ```sh
 $ nvim sun.snake
 ```
@@ -55,6 +55,7 @@ Example 2: subtrac two numbers
 | OPERATIONS | SYMBOL | ACTION |
 |------------|--------|--------|
 |    PLUS    |    +   |   SUN  |
+|    PUSH    |        |   PUSH |
 |    MINUS   |    -   |   SUB  |
 |    DUMP    |    .   |   DUMP |
 

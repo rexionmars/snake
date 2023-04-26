@@ -63,7 +63,7 @@ def simulate_program(program):
 def compile_program(program, out_file_path):
     # Hardcode injection code in assembly
     # This code in assembly is not exhaustive tested
-    with open(out_file_path, "w") as out:
+    with open(out_file_path, 'w') as out:
         out.write('segment .text\n')
         out.write(f'dump:\n')
         out.write(f'    push    rbp\n')
@@ -159,26 +159,31 @@ program = [
 ]
 
 def usage_mode():
-    """Usage: snake <SUBCOMMAND> <ARGS>
-
-    SUBCOMMANDS:
-    run             Simulate the program
-    compile         Compile the program
-    """
+    print(f'\
+    Usage: snake <SUBCOMMAND> <ARGS>\n\n\
+    SUBCOMMANDS:\n\
+    simulate   <file>  Simulate the program\n\
+    compile    <file>  Compile the program\n\
+    ')
 
 def call_subcmd(cmd):
     print(f'runnig -> {cmd}')
     subprocess.call(cmd)
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print(usage_mode.__doc__)
+    argv = sys.argv
+
+    if len(argv) < 2:
+        usage_mode()
         print('ERROR: it is necessary to supply a subcommand')
         exit(1)
+    # remove program
+    argv = argv[1:]
 
-    subcommand = sys.argv[1]
+    subcommand = argv[1]
 
-    if subcommand == 'run':
+    if subcommand == 'simulate':
+        print('using [simulate] mode')
         simulate_program(program)
 
     elif subcommand == 'compile':
@@ -187,6 +192,6 @@ if __name__ == '__main__':
         call_subcmd(['ld', '-o', 'test/output', 'test/test.o'])
 
     else:
-        print(usage_mode.__doc__)
+        usage_mode()
         print(f'\nERROR!: unknown subcommand: \"{subcommand}\"')
         exit(1)

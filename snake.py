@@ -158,32 +158,43 @@ program = [
     dump(),
 ]
 
-def usage_mode():
+def usage_mode(program):
     print(f'\
     Usage: snake <SUBCOMMAND> <ARGS>\n\n\
     SUBCOMMANDS:\n\
-    simulate   <file>  Simulate the program\n\
+    nobuild   <file>  Simulate the program\n\
     compile    <file>  Compile the program\n\
+    \nExample: ./snake nobuild {program}\n\
     ')
 
 def call_subcmd(cmd):
     print(f'runnig -> {cmd}')
     subprocess.call(cmd)
 
+def uncons(xs):
+    return (xs[0], xs[1:])
+
 if __name__ == '__main__':
     argv = sys.argv
+    assert len(argv) >= 1
+
+    (program_name, args) = uncons(argv)
 
     if len(argv) < 2:
-        usage_mode()
+        usage_mode(program_name)
         print('ERROR: it is necessary to supply a subcommand')
         exit(1)
-    # remove program
-    argv = argv[1:]
 
-    subcommand = argv[1]
+    (subcommand, argv) = uncons(argv)
 
-    if subcommand == 'simulate':
-        print('using [simulate] mode')
+    if subcommand == 'nobuild':
+        if len(argv) < 1:
+            usage_mode(program_name)
+            print('ERROR: no input file is provided for the simulate')
+            exit(1)
+
+        (program_path, argv) = uncons(argv)
+        program = load_program_from_file(program_path);
         simulate_program(program)
 
     elif subcommand == 'compile':
@@ -192,6 +203,6 @@ if __name__ == '__main__':
         call_subcmd(['ld', '-o', 'test/output', 'test/test.o'])
 
     else:
-        usage_mode()
+        usage_mode(program)
         print(f'\nERROR!: unknown subcommand: \"{subcommand}\"')
         exit(1)

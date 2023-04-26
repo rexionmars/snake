@@ -50,4 +50,12 @@ Example 2: subtrac two numbers
 ```sh
 13 9 - .
 ```
+
+## Basics Operations
+| OPERATIONS | SYMBOL | ACTION |
+|------------|--------|--------|
+|    PLUS    |    +   |   SUN  |
+|    MINUS   |    -   |   SUB  |
+|    DUMP    |    .   |   DUMP |
+
 **WARNING! THIS LANGUAGE IS A WORK IN PROGRESS! ANYTHING CAN CHANGE AT ANY MOMENT WITHOUT ANY NOTICE! USE THIS LANGUAGE AT YOUR OWN RISK!**

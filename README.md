@@ -36,3 +36,18 @@ this will generate an x86_64 Linux executable, in the tests folder
 ```sh
 $ cd tests && ./output
 ```
+
+A simple example using PUSH, PLUS, MINUS, DUMP<br>
+Use your favorite editor, i lovel neovim
+```sh
+$ nvim sun.snake
+```
+Example 1: sun two numbers
+```sh
+49 99 + .
+```
+Example 2: subtrac two numbers
+```sh
+13 9 - .
+```
+**WARNING! THIS LANGUAGE IS A WORK IN PROGRESS! ANYTHING CAN CHANGE AT ANY MOMENT WITHOUT ANY NOTICE! USE THIS LANGUAGE AT YOUR OWN RISK!**

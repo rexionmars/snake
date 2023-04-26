@@ -146,25 +146,29 @@ def compile_program(program, out_file_path):
         out.write('    mov rdi, 0\n')
         out.write('    syscall\n')
 
-# Unhardcode program
-program = [
-    push(34),
-    push(35),
-    plus(),
-    dump(),
-    push(500),
-    push(80),
-    minus(),
-    dump(),
-]
+def parser_word_as_operation(word):
+    assert COUNT_OPS == 4, 'Exhaustive operation handling in parser_word_as_operation'
 
-def usage_mode(program):
+    # Check operation in stack
+    if word == '+':
+        return plus()
+    elif word == '-':
+        return minus()
+    elif word == '.':
+        return dump()
+    else:
+        return push(int(word))
+
+def load_program_from_file(file_path):
+    with open(file_path, 'r') as file:
+        return [parser_word_as_operation(word) for word in file.read().split()]
+
+def usage_mode():
     print(f'\
     Usage: snake <SUBCOMMAND> <ARGS>\n\n\
     SUBCOMMANDS:\n\
-    nobuild   <file>  Simulate the program\n\
-    compile    <file>  Compile the program\n\
-    \nExample: ./snake nobuild {program}\n\
+    --no-build   <file>  Simulate the program\n\
+    --compile    <file>  Compile the program\n\
     ')
 
 def call_subcmd(cmd):
@@ -177,34 +181,31 @@ def uncons(xs):
 if __name__ == '__main__':
     argv = sys.argv
     assert len(argv) >= 1
+    (program_name, argv) = uncons(argv)
 
-    (program_name, args) = uncons(argv)
-
-    if len(argv) < 2:
-        usage_mode(program_name)
+    if len(argv) < 1:
+        usage_mode()
         print('ERROR: it is necessary to supply a subcommand')
         exit(1)
-
     (subcommand, argv) = uncons(argv)
 
-    if subcommand == 'nobuild':
+    if subcommand == '--no-build':
         if len(argv) < 1:
-            usage_mode(program_name)
+            usage_mode()
             print('ERROR: no input file is provided for the simulate')
             exit(1)
 
         (program_path, argv) = uncons(argv)
-
-        # load_program_from_file is not implemented
         program = load_program_from_file(program_path);
         simulate_program(program)
 
-    elif subcommand == 'compile':
-        compile_program(program, 'test/test.asm')
+    elif subcommand == '--compile':
+        # TODO: fix this
+        compile_program(program_name, 'test/test.asm')
         call_subcmd(['nasm', '-felf64', 'test/test.asm'])
         call_subcmd(['ld', '-o', 'test/output', 'test/test.o'])
 
     else:
-        usage_mode(program)
+        usage_mode()
         print(f'\nERROR!: unknown subcommand: \"{subcommand}\"')
         exit(1)

@@ -194,6 +194,8 @@ if __name__ == '__main__':
             exit(1)
 
         (program_path, argv) = uncons(argv)
+
+        # load_program_from_file is not implemented
         program = load_program_from_file(program_path);
         simulate_program(program)
 

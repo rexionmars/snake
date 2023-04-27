@@ -61,8 +61,7 @@ def simulate_program(program):
             assert False, 'unreachable'
 
 def compile_program(program, out_file_path):
-    # Hardcode injection code in assembly
-    # This code in assembly is not exhaustive tested
+    # Hardcode Dump function
     with open(out_file_path, 'w') as out:
         out.write('segment .text\n')
         out.write(f'dump:\n')
@@ -200,8 +199,15 @@ if __name__ == '__main__':
         simulate_program(program)
 
     elif subcommand == '--compile':
-        # TODO: fix this
-        compile_program(program_name, 'test/test.asm')
+        if len(argv) < 1:
+            usage_mode()
+            print('ERROR: no input file is provided for the compile')
+            exit(1)
+
+        (program_path, argv) = uncons(argv)
+        program = load_program_from_file(program_path);
+
+        compile_program(program, 'test/test.asm')
         call_subcmd(['nasm', '-felf64', 'test/test.asm'])
         call_subcmd(['ld', '-o', 'test/output', 'test/test.o'])
 

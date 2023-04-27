@@ -19,6 +19,38 @@ A stack-based programming language is useful in situations where the execution s
 **WARNING! THIS LANGUAGE IS A WORK IN PROGRESS! ANYTHING CAN CHANGE AT ANY MOMENT WITHOUT ANY NOTICE! USE THIS LANGUAGE AT YOUR OWN RISK!**
 
 ## Quick Start
+```sh
+$ git clone https://github.com/rexionmars/snake-lang.git
+```
+```sh
+$ cd snake-lang
+```
+
+## Folder Structure
+```lua
+docs/
+  |
+  +-- Documentations and references
+  
+dump.c
+  |
+  +-- Dump implementation
+  
+examples/
+  |
+  +-- This folder contains examples of programs made in SNAKE
+  
+snake.py
+  |
+  +-- This file is the principal and contain base functions
+  
+test/
+  |
+  +-- This folder contains output x86_64 binary generated
+      from assembly
+
+```
+## SNAKE usage
 Sanake has two modes of operation, the first mode to Simulate the program, and the second mode to Compile the program.<br><br>
 SNAKE without parameters returns the help menu
 ```sh

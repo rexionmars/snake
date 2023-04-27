@@ -68,7 +68,7 @@ this will generate an x86_64 Linux executable, in the tests folder
 ```sh
 $ cd tests && ./output
 ```
-
+## Your first Hello World in SNAKE
 A simple example using PUSH, PLUS, MINUS, DUMP<br>
 Use your favorite editor, i love neovim
 ```sh

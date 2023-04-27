@@ -163,12 +163,13 @@ def load_program_from_file(file_path):
         return [parser_word_as_operation(word) for word in file.read().split()]
 
 def usage_mode():
-    print(f'\
-    Usage: snake <SUBCOMMAND> <ARGS>\n\n\
-    SUBCOMMANDS:\n\
-    --no-build   <file>  Simulate the program\n\
-    --compile    <file>  Compile the program\n\
-    ')
+    """Usage: snake <SUBCOMMAND> <ARGS>
+    SUBCOMMANDS:
+    --no-build   <file>  Simulate the program
+
+    --compile    <file>  Compile the program and generate
+                         a executable binary x86_64 Linux
+    """
 
 def call_subcmd(cmd):
     print(f'runnig -> {cmd}')
@@ -183,7 +184,7 @@ if __name__ == '__main__':
     (program_name, argv) = uncons(argv)
 
     if len(argv) < 1:
-        usage_mode()
+        print(usage_mode.__doc__)
         print('ERROR: it is necessary to supply a subcommand')
         exit(1)
     (subcommand, argv) = uncons(argv)
@@ -200,7 +201,7 @@ if __name__ == '__main__':
 
     elif subcommand == '--compile':
         if len(argv) < 1:
-            usage_mode()
+            print(usage_mode.__doc__)
             print('ERROR: no input file is provided for the compile')
             exit(1)
 

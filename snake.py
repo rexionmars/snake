@@ -172,7 +172,7 @@ def usage_mode():
     """
 
 def call_subcmd(cmd):
-    print(f'runnig -> {cmd}')
+    print(f'[RUNING] -> {cmd}')
     subprocess.call(cmd)
 
 def uncons(xs):
@@ -209,10 +209,11 @@ if __name__ == '__main__':
         program = load_program_from_file(program_path);
 
         compile_program(program, 'test/test.asm')
+        print(f'')
         call_subcmd(['nasm', '-felf64', 'test/test.asm'])
         call_subcmd(['ld', '-o', 'test/output', 'test/test.o'])
 
     else:
-        usage_mode()
-        print(f'\nERROR!: unknown subcommand: \"{subcommand}\"')
+        print(f'ERROR: unknown subcommand: \"{subcommand}\"\n')
+        print(f'Try using this:\n{usage_mode.__doc__}')
         exit(1)

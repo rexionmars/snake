@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import shlex
 import subprocess
 
 iota_counter = 0
@@ -171,9 +172,9 @@ def usage_mode():
                          a executable binary x86_64 Linux
     """
 
-def call_subcmd(cmd):
-    print(f'[RUNING] -> {cmd}')
-    subprocess.call(cmd)
+def call_subcmd_echoed(cmd, **kwargs):
+    print('[RUNING] -> ' + ' '.join(map(shlex.quote, cmd)))
+    return subprocess.call(cmd, **kwargs)
 
 def uncons(xs):
     return (xs[0], xs[1:])
@@ -207,11 +208,11 @@ if __name__ == '__main__':
 
         (program_path, argv) = uncons(argv)
         program = load_program_from_file(program_path);
-
         compile_program(program, 'test/test.asm')
-        print(f'')
-        call_subcmd(['nasm', '-felf64', 'test/test.asm'])
-        call_subcmd(['ld', '-o', 'test/output', 'test/test.o'])
+
+        print(f'[INFO] -> Generating {program_path}')
+        call_subcmd_echoed(['nasm', '-felf64', 'test/test.asm'])
+        call_subcmd_echoed(['ld', '-o', 'test/output', 'test/test.o'])
 
     else:
         print(f'ERROR: unknown subcommand: \"{subcommand}\"\n')

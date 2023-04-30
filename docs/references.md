@@ -9,3 +9,12 @@ https://reverseengineering.stackexchange.com/questions/2627/what-is-the-meaning-
 
 ## WebAssembly type-checking
 https://binji.github.io/posts/webassembly-type-checking/
+
+## Lexical analysis Wikipedia
+https://en.wikipedia.org/wiki/Lexical_analysis
+
+## Introduction of Lexical Analysis
+https://www.geeksforgeeks.org/introduction-of-lexical-analysis/
+
+## The Phases of a compiler-Lexical Analysis
+https://www.javatpoint.com/the-phases-of-a-compiler-lexical-analysis

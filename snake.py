@@ -4,17 +4,16 @@ import sys
 import shlex
 import subprocess
 
+from os import path
+
 iota_counter = 0
 
 def iota(reset = False):
     global iota_counter
-
     if reset:
         iota_counter = 0
-
     result = iota_counter
     iota_counter += 1
-
     return result
 
 OP_PUSH = iota(True)
@@ -166,10 +165,11 @@ def load_program_from_file(file_path):
 def usage_mode():
     """Usage: snake <SUBCOMMAND> <ARGS>
     SUBCOMMANDS:
-    --no-build   <file>  Simulate the program
+    --preview   <file>  Simulate the program without
+                        compile
 
-    --compile    <file>  Compile the program and generate
-                         a executable binary x86_64 Linux
+    --compile   <file>  Compile the program and generate
+                        a executable binary x86_64 Linux
     """
 
 def call_subcmd_echoed(cmd, **kwargs):
@@ -190,7 +190,7 @@ if __name__ == '__main__':
         exit(1)
     (subcommand, argv) = uncons(argv)
 
-    if subcommand == '--no-build':
+    if subcommand == '--preview':
         if len(argv) < 1:
             usage_mode()
             print('ERROR: no input file is provided for the simulate')
@@ -208,11 +208,11 @@ if __name__ == '__main__':
 
         (program_path, argv) = uncons(argv)
         program = load_program_from_file(program_path);
-        compile_program(program, 'test/test.asm')
+        compile_program(program, 'outdir/test.asm')
 
         print(f'[INFO] -> Generating {program_path}')
-        call_subcmd_echoed(['nasm', '-felf64', 'test/test.asm'])
-        call_subcmd_echoed(['ld', '-o', 'test/output', 'test/test.o'])
+        call_subcmd_echoed(['nasm', '-felf64', program_path])
+        call_subcmd_echoed(['ld', '-o', 'outdir/output', 'outdir/test.o'])
 
     else:
         print(f'ERROR: unknown subcommand: \"{subcommand}\"\n')

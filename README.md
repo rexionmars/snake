@@ -21,7 +21,7 @@ A stack-based programming language is useful in situations where the execution s
 ## Main characteristics
 - [x] Compiled
 - [x] Native
-- [x] Stack-based (just like Forth)
+- [x] Stack-based
 - [ ] Turing-complete (yes, the development is at such an early stage that this thing is not even Turing complete yet)
 - [ ] Statically typed (the type checking is probably gonna be similar to the [WASM validation](https://binji.github.io/posts/webassembly-type-checking/))
 - [ ] Self-hosted (Python is used only as an initial bootstrap, once the language is mature enough we gonna rewrite it in itself)

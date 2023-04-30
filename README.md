@@ -44,7 +44,7 @@ snake.py
   |
   +-- This file is the principal and contain base functions
   
-test/
+outdir/
   |
   +-- This folder contains output x86_64 binary generated
       from assembly
@@ -58,7 +58,7 @@ $ ./snake.py
 ```
 simulate program
 ```sh
-$ ./snake.py --no-build <args>
+$ ./snake.py --preview <args>
 ```
 or compile the program
 ```sh

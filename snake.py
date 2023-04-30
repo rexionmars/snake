@@ -172,8 +172,8 @@ def usage_mode():
                         a executable binary x86_64 Linux
     """
 
-def call_subcmd_echoed(cmd, **kwargs):
-    print('[RUNING] -> ' + ' '.join(map(shlex.quote, cmd)))
+def call_subcommand(cmd, **kwargs):
+    print('[RUNING] ' + ' '.join(map(shlex.quote, cmd)))
     return subprocess.call(cmd, **kwargs)
 
 def uncons(xs):
@@ -201,6 +201,8 @@ if __name__ == '__main__':
         simulate_program(program)
 
     elif subcommand == '--compile':
+        DOT_SNAKE_EXTENSION = '.snake'
+
         if len(argv) < 1:
             print(usage_mode.__doc__)
             print('ERROR: no input file is provided for the compile')
@@ -208,11 +210,15 @@ if __name__ == '__main__':
 
         (program_path, argv) = uncons(argv)
         program = load_program_from_file(program_path);
-        compile_program(program, 'outdir/test.asm')
+        basename = path.basename(program_path)
 
-        print(f'[INFO] -> Generating {program_path}')
-        call_subcmd_echoed(['nasm', '-felf64', program_path])
-        call_subcmd_echoed(['ld', '-o', 'outdir/output', 'outdir/test.o'])
+        if basename.endswith(DOT_SNAKE_EXTENSION):
+            basename = basename[:-len(DOT_SNAKE_EXTENSION)]
+
+        print(f'[INFO] Generating {program_path}')
+        compile_program(program, basename + '.asm')
+        call_subcommand(['nasm', '-felf64', basename + '.asm'])
+        call_subcommand(['ld', '-o', basename, basename + '.o'])
 
     else:
         print(f'ERROR: unknown subcommand: \"{subcommand}\"\n')

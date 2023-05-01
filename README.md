@@ -22,6 +22,7 @@ A stack-based programming language is useful in situations where the execution s
 - [x] Compiled
 - [x] Native
 - [x] Stack-based
+- [x] Python is being used only for the initial bootstrap
 
 ## Quick Start
 ```sh
@@ -37,9 +38,9 @@ docs/
   |
   +-- Documentations and references
   
-dump.c
+std/
   |
-  +-- Dump implementation
+  +-- Standard Library for scripts
   
 examples/
   |
@@ -95,3 +96,6 @@ Example 2: subtrac two numbers
 |    PUSH    |        |   PUSH |
 |    MINUS   |    -   |   SUB  |
 |    DUMP    |    .   |   DUMP |
+
+## Contributors
+![GitHub Contributors Image](https://contrib.rocks/image?repo=rexionmars/snake)

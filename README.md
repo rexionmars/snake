@@ -22,9 +22,6 @@ A stack-based programming language is useful in situations where the execution s
 - [x] Compiled
 - [x] Native
 - [x] Stack-based
-- [ ] Turing-complete (yes, the development is at such an early stage that this thing is not even Turing complete yet)
-- [ ] Statically typed (the type checking is probably gonna be similar to the [WASM validation](https://binji.github.io/posts/webassembly-type-checking/))
-- [ ] Self-hosted (Python is used only as an initial bootstrap, once the language is mature enough we gonna rewrite it in itself)
 
 ## Quick Start
 ```sh
@@ -98,5 +95,3 @@ Example 2: subtrac two numbers
 |    PUSH    |        |   PUSH |
 |    MINUS   |    -   |   SUB  |
 |    DUMP    |    .   |   DUMP |
-
-**WARNING! THIS LANGUAGE IS A WORK IN PROGRESS! ANYTHING CAN CHANGE AT ANY MOMENT WITHOUT ANY NOTICE! USE THIS LANGUAGE AT YOUR OWN RISK!**

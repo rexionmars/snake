@@ -62,3 +62,159 @@ Int_val and float_val will contain the correct value when either an integer or r
 The tokenizer next must provide several procedures to manipulate tokens. An initialization procedure is usually needed to open the input stream and find the first token. The parser will need a procedure to read the next token on command. This procedure is shown below. The procedure looks long and scary, but it is very straight forward. Most of the space is taken up with comments, and there is nothing tricky in the code itself.
 
 procedure Advance_Token (var Token : Token_Type);
+```pascal
+procedure Advance_Token (var Token : Token_Type);
+
+var
+  read_str_idx : integer;
+  i : integer;
+
+begin
+  with token do
+    begin
+      (* Clear strings *)
+      (* You may have to provide the following     *)
+      (* procedure.  Check your compiler's manuals *)
+      (* for how to do this                        *)
+      clear_string (cur_str);
+      clear_string (read_string);
+      clear_string (cap_string);
+
+      (* Find start of next token *)
+      while (cur_str[cur_pos] = ' ') do
+        begin
+          (* if end of line, get next line *)
+          if (cur_pos > cur_str_len) then
+            begin
+              readln (infile, cur_str);
+              (* You may have to provide the following     *)
+              (* procedure.  Check your compiler's manuals *)
+              (* for how to do this                        *)
+              find_string_length (cur_str_len, cur_str);
+              cur_pos := 1;
+            end; {if (cur_pos > cur_str_len)}
+
+            (* if end of file, return end of 
+               file reserved symbol *)
+            if (eof(infile)) then
+              begin
+                type_of_token := RESERVED_SYMBOL;
+                res_sym       := END_OF_FILE;
+                return;
+              end; { if (eof(infile)) }
+        end; { while (cur_str[cur_pos] = ' ')
+
+      (* copy token to read_string and cap_string *)
+      read_str_idx := 1;
+      (* you have to provide the function not_delimiter *)
+      (* it simply tests the character and returns true *)
+      (* if it is not in the set of delimiters          *)
+      while (not_delimiter(cur_str[cur_pos])) do
+        begin
+          read_str[read_str_idx] := cur_str[cur_pos];
+          cap_str[read_str_idx]  :=
+                            upcase (cur_str[cur_pos]);
+          read_str_idx := read_str_idx + 1;
+        end; { while (not_delimiter(cur_str[cur_pos])) }
+
+      (* determine token type *)
+      (* is token an identifier? *)
+      if (cap_string[1] >= 'A') and
+         (cap_string[1] <= 'Z') then
+        begin
+          (* is token a global reserved word? *)
+
+          (* glob_res_word_table is a table (possibly a     *)
+          (* binary search tree) of reserved words.         *)
+          (* Find_in_table returns the enumeration value    *)
+          (* associated with the reserved word if it is a   *)
+          (* globally reserved word.  Otherwise it returns  *)
+          (* UNDEFINED.                                     *)
+          find_in_table(glob_res_word_table, 
+                        cap_string, 
+                        glob_res_word);
+          if NOT (glob_res_word = UNDEFINED) then
+            begin
+              type_of_token := GLOBAL_RES_WORD;
+              return;
+            end; { if NOT (glob_res_word = UNDEFINED) }
+
+          (* is token a context sensitive reserved word? *)
+          find_in_table(con_res_word_table, 
+                        cap_string, 
+                        con_res_word);
+          if NOT (con_res_word = UNDEFINED) then
+            begin
+              type_of_token := CONTEXT_RES_WORD;
+              return;
+            end; { if NOT (con_res_word = UNDEFINED) }
+
+          (* if its not a global reserved word or a context *)
+          (* sensitive reserved word, it must be an         *)
+          (* identifier                                     *)
+
+          type_of_token := INDENTIFIER;
+          return;
+        end; { if (cap_string[1] >= 'A') and
+                  (cap_string[1] <= 'Z') }
+
+      (* is token a number? *)
+      if ((cap_string[1] >= '0') and
+          (cap_string[1] <= '9')) or
+          (cap_string[1] = '-' then
+        (* is token a real or integer? *)
+        for i := 2 to read_str_idx do
+          if (cap_string[i] = '.') or
+             (cap_string[i] = 'E') then
+            begin
+              (* once again, you may have to provide *)
+              (* the following function to translate *)
+              (* a string to a real                  *)
+              float_val     := string_to_real(cap_string);
+              type_of_token := real_type;
+              return;
+            end; {if (cap_string[i] = '.') or
+                     (cap_string[i] = 'E') }
+        else
+          begin  
+            int_val       := string_to_int(cap_string);
+            type_of_token := int_type;
+            return;
+          end;
+
+      (* is token a string? *)
+      if (cap_string[1] = '''') then (* this syntax seems
+                                        strange, but it seems to
+                                        work! *)
+        begin
+          type_of_token := string_type;
+          return;
+        end;
+
+      (* is token a reserved symbol? *)
+      find_in_table(res_sym_table, 
+                    cap_string, 
+                    res_sym);
+      if NOT (res_sym = UNDEFINED) then
+        begin
+          type_of_token := reserved_sym;
+          return;
+        end;
+
+     (* if the type of token has not been found yet *)
+     (* it must be an unknown type                  *)
+     (* This is a lexical error                     *)
+     type_of_token := UNKNOWN_TOKEN_TYPE;  
+
+   end; { with token do }
+end; { procedure advance_token }
+```
+This procedure is actually only about two and a half pages long, and without comments it would probably be less than two. Some software engineers stress that a procedure should not be more than a page long. Such "engineers" are generally college professors that have never ventured beyond the walls of their ivory towers. In real life a two and a half page procedure is considered not overly long. As long as the entire procedure is on the same logical level, it will be readable and easy to understand.
+
+The general logic of the procedure should be easy to see by reading it (or its comments). First we find the next token. This might involve reading the next line from the input stream. Next we copy the token into read_string and cap_string. Then we set about determining the type of the token. If the token starts with a letter, it is an identifier, global reserved word or context sensitive reserved word. To determine if the identifier is a context sensitive or global reserved word, tables are queried that contain each type of word. If the identifier is found in one of the tables, the associated enumeration is returned.
+
+Note that a very flexible tokenizer could be created by using strings instead of enumerations and keeping the reserved words and symbols in a file. When the tokenizer is initialized the reserved words and symbols can be read into the tables. This way the language the tokenizer works on can be changed by simply changing the files. No source code would need to be changed. The draw back is that the parser needs to perform comparisons. If strings are used instead of enumerations, less efficient string compares would have to be used instead of more efficient comparisons on enumerations.
+
+If the first character of the token is a digit the token is a number, or if the first character is a minus sign the token is a negative number. If the token is a number it might be a real or an integer. If it contains a decimal point or the letter E (which indicates scientific notation) then it is a real, otherwise it is an integer. Note that this could be masking a lexical error. If the file contains a token "9abc" the lexer will turn it into an integer 9. It is likely that any such error will cause a syntax error which the parser can catch, however the lexer should probably be beefed up to look for such things. It will make for more readable error messages to the user.
+
+If the token is not a number it could be a string. Strings in Pascal are identified by single quote marks. And finally, if the token is not a string it must be a reserved symbol. For convenience, the reserved symbols are stored in the same type of table as the global and context sensitive reserved words. If the token is not found in this table it is a lexical error. The tokenizer does not handle errors itself, so it simply notifies the parser that an unidentified token type has been found. The parser will handle the error.

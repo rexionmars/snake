@@ -1,10 +1,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![](https://img.shields.io/github/languages/count/whoisleonardi/snake-lang?color=red)
-![](https://img.shields.io/github/issues-pr/whoisleonardi/snake-lang)
-![](https://img.shields.io/github/issues/whoisleonardi/snake-lang?color=pink)
-![](https://img.shields.io/github/issues-pr/whoisleonardi/snake-lang?color=orange)
+![](https://img.shields.io/github/languages/count/rexionmars/snake-lang?color=red)
+![](https://img.shields.io/github/issues-pr/rexionmars/snake-lang)
+![](https://img.shields.io/github/issues/rexionmars/snake-lang?color=pink)
+![](https://img.shields.io/github/issues-pr/rexionmars/snake-lang?color=orange)
 
-<img src="thumbnail/snake_banner.jpg" alt="Snake logo">
+<img src="thumbnail/main_snake_banner.jpg" alt="Snake logo">
 SNAKE is a Concatenative Stack-Oriented Programming Language for Computers.
 This will be updated soon
 
@@ -17,6 +17,9 @@ This approach is commonly used in functional programming languages, such as the 
 A stack-based programming language is useful in situations where the execution stack is a natural and efficient way to store and manipulate data. For example, it can be used to simplify the implementation of mathematical calculations, which involve a series of operations that are performed on a stack of data. In addition, the stack approach can be used to simplify the flow control of a program, since the stack manipulation can be used to control the execution of subroutines and loops in a very efficient way.
 
 **WARNING! THIS LANGUAGE IS A WORK IN PROGRESS! ANYTHING CAN CHANGE AT ANY MOMENT WITHOUT ANY NOTICE! USE THIS LANGUAGE AT YOUR OWN RISK!**
+
+## Target Compile
+<img src="thumbnail/target_compile.jpg" alt="Snake Target Compile">
 
 ## Main characteristics
 - [x] Compiled

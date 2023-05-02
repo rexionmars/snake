@@ -9,6 +9,8 @@ ref:<br>
     https://www.guru99.com/compiler-design-lexical-analysis.html<br>
     https://datacadamia.com/code/compiler/lexer<br>
     https://courses.cs.washington.edu/courses/cse401/01sp/02-lexing.pdf<br>
+    https://www.toptal.com/scala/writing-an-interpreter#:~:text=A%20lexer%20is%20the%20part,specified%20by%20a%20formal%20grammar<br>
+    https://com-lihaoyi.github.io/fastparse/<br>
     
 ## DEV.TO
 The first task when implementing any language (that is already specified) is to turn the source code into some sort of Syntax Tree that's meaningful to the computer, rather than the human-optimized surface language.
@@ -46,4 +48,47 @@ Term =
   | Int:{ '0'..='9'+ }
   | Expr:ParenExpr
   ;
+```
+
+## Toptal concept: The Dos and Don’ts of Writing Your Own Interpreter
+An interpreter is a complex program, so there are multiple stages to it:<br>
+- A lexer is the part of an interpreter that turns a sequence of characters (plain text) into a sequence of tokens.
+- A parser, in turn, takes a sequence of tokens and produces an abstract syntax tree (AST) of a language. The rules by which a parser operates are usually specified by a formal grammar.
+- An interpreter is a program that interprets the AST of the source of a program on the fly (without compiling it first).
+
+We won’t build a specific, integrated interpreter here. Instead, we’ll explore each of these parts and their common issues with separate examples. In the end, the user code will look li
+```rust
+val input = "2 * 7 + 5"
+val tokens = Lexer(input).lex()
+val ast = Parser(tokens).parse()
+val res = Interpreter(ast).interpret()
+println(s"Result is: $res")
+```
+
+### Interpreter Component 1: Writing a Lexer
+Let’s say we want to lex this string: "123 + 45 true * false1". It contains different types of tokens:
+Integer literals
+- A + operator
+- A * operator
+- A true literal
+An identifier, false1
+Whitespace between tokens will be skipped in this example.
+At this stage, expressions don’t have to make sense; the lexer simply converts the input string into a list of tokens. (The job of “making sense of tokens” is left to the parser.)
+We’ll use this code to represent a token:
+```rust
+case class Token(
+  tpe: Token.Type,
+  text: String,
+  startPos: Int
+)
+
+object Token:
+  enum Type:
+    case Num
+    case Plus
+    case Times
+    case Identifier
+    case True
+    case False
+    case EOF
 ```

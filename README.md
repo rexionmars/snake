@@ -27,10 +27,10 @@ A stack-based programming language is useful in situations where the execution s
 
 ## Quick Start
 ```sh
-$ git clone https://github.com/rexionmars/snake-lang.git
+$ git clone https://github.com/rexionmars/snake.git
 ```
 ```sh
-$ cd snake-lang
+$ cd snake
 ```
 
 ## Folder Structure

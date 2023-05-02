@@ -4,7 +4,7 @@
 ![](https://img.shields.io/github/issues/rexionmars/snake-lang?color=pink)
 ![](https://img.shields.io/github/issues-pr/rexionmars/snake-lang?color=orange)
 
-<img src="thumbnail/s.jpg" alt="Snake logo">
+<img src="thumbnail/main_snake_banner.jpg" alt="Snake logo">
 SNAKE is a Concatenative Stack-Oriented Programming Language for Computers.
 This will be updated soon
 

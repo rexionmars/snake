@@ -23,7 +23,6 @@ A stack-based programming language is useful in situations where the execution s
 - [x] Compiled
 - [x] Native
 - [x] Stack-based
-- [x] Python is being used only for the initial bootstrap
 
 ## Quick Start
 ```sh
@@ -95,7 +94,7 @@ Reading from left to right, this is interpreted as follows:
 - Apply the – operation: take the top two numbers off the stack, subtract the top one from the one below, and put the result back on the stack. The stack now contains (5, 8).
 - Apply the * operation: take the top two numbers off the stack, multiply them together, and put the result back on the stack. The stack now contains just the number 40.
 
-## Your first Hello World in SNAKE
+## Your first Hello World in SNAKE (in initial state)
 A simple example using PUSH, PLUS, MINUS, DUMP<br>
 Use your favorite editor, i love neovim
 ```sh

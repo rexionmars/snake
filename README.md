@@ -38,9 +38,9 @@ docs/
   |
   +-- Documentations and references
   
-std/
+container/
   |
-  +-- Standard Library for scripts
+  +-- Standard Library for scripts (temporary)
   
 examples/
   |

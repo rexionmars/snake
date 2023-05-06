@@ -5,7 +5,7 @@
 ![](https://img.shields.io/github/issues-pr/rexionmars/snake-lang?color=orange)
 
 <img src="thumbnail/main_snake_banner.jpg" alt="Snake logo">
-SNAKE is a Concatenative Stack-Oriented Programming Language for Computers.
+SNAKE is a Concatenative Stack-Oriented Programming Language.
 This will be updated soon
 
 ## What is a Stack-based programming language?

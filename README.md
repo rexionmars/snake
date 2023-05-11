@@ -16,8 +16,8 @@ This approach is commonly used in functional programming languages, such as the 
 
 A stack-based programming language is useful in situations where the execution stack is a natural and efficient way to store and manipulate data. For example, it can be used to simplify the implementation of mathematical calculations, which involve a series of operations that are performed on a stack of data. In addition, the stack approach can be used to simplify the flow control of a program, since the stack manipulation can be used to control the execution of subroutines and loops in a very efficient way.
 
-## Compilation target for platforms
-<img src="thumbnail/target_compile.jpg" alt="Snake Target Compile">
+<!-- ## Compilation target for platforms
+<img src="thumbnail/target_compile.jpg" alt="Snake Target Compile"> -->
 
 ## Main characteristics
 - [x] Compiled

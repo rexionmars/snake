@@ -1,22 +1,17 @@
-def strip_collumn(line: list, collumn: int) -> int:
-    while collumn < len(line) and line[collumn].__isspace():
-        collumn += 1
-    return collumn
+#!/bin/python3
 
-def chop_world(): ...
+def find_collumn(line, start, predicate) -> int:
+    while start < len(line) and not predicate(line[start]):
+        start += 1
+    return start
 
 def lexer_line(line):
-    collumn = strip_collumn(line, 0)
+    collumn = find_collumn(line, 0, lambda x: not x.isspace())
+
     while collumn < len(line):
-        collumn_end = line.find(' ', collumn)
-
-        if collumn_end < 0:
-            collumn_end = len(line)
-        elif collumn_end == 0:
-            assert False, 'Unreachable, strip_collumn must ensure that this never happens'
-
+        collumn_end = find_collumn(line, collumn, lambda x: x.isspace())
         yield (collumn, line[collumn:collumn_end])
-        collumn = strip_collumn(line, collumn_end)
+        collumn = find_collumn(line, collumn_end, lambda x: not x.isspace())
 
 def lexer_file(file_parh):
     """
@@ -29,3 +24,4 @@ def lexer_file(file_parh):
             for (row, line) in enumerate(file.readlines())
             for (col, token) in lexer_line(line)
         ]
+

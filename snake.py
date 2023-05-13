@@ -6,6 +6,13 @@ import subprocess
 
 from os import path
 
+from colorama import init as colorama_init
+from colorama import Fore
+from colorama import Style
+
+colorama_init()
+
+
 iota_counter = 0
 
 def iota(reset = False):
@@ -145,10 +152,9 @@ def compile_program(program, out_file_path):
         out.write('    mov rdi, 0\n')
         out.write('    syscall\n')
 
-def parser_word_as_operation(word):
-    assert COUNT_OPS == 4, 'Exhaustive operation handling in parser_word_as_operation'
-
-    # Check operation in stack
+def parser_token_as_operation(token):
+    (file_path, row, collumn, word) = token
+    assert COUNT_OPS == 4, 'Exhaustive operation handling in parser_token_as_operation'
     if word == '+':
         return plus()
     elif word == '-':
@@ -156,11 +162,35 @@ def parser_word_as_operation(word):
     elif word == '.':
         return dump()
     else:
-        return push(int(word))
+        try:
+            return push(int(word))
+        except ValueError as err:
+            print(f'{file_path}\nreturned [{row}:{collumn}] -> {Fore.RED}{err}{Style.RESET_ALL}')
+            exit(1)
+
+def find_collumn(line, start, predicate) -> int:
+    while start < len(line) and not predicate(line[start]):
+        start += 1
+    return start
+
+def lexer_line(line):
+    collumn = find_collumn(line, 0, lambda x: not x.isspace())
+
+    while collumn < len(line):
+        collumn_end = find_collumn(line, collumn, lambda x: x.isspace())
+        yield (collumn, line[collumn:collumn_end])
+        collumn = find_collumn(line, collumn_end, lambda x: not x.isspace())
+
+def lexer_file(file_parh):
+    with open(file_parh, 'r') as file:
+        return [
+            (file_parh, row, col, token)
+            for (row, line) in enumerate(file.readlines())
+            for (col, token) in lexer_line(line)
+        ]
 
 def load_program_from_file(file_path):
-    with open(file_path, 'r') as file:
-        return [parser_word_as_operation(word) for word in file.read().split()]
+    return [parser_token_as_operation(token) for token in lexer_file(file_path)]
 
 def usage_mode():
     """Usage: snake <SUBCOMMAND> <ARGS>
@@ -201,8 +231,6 @@ if __name__ == '__main__':
         simulate_program(program)
 
     elif subcommand == '--compile':
-        DOT_SNAKE_EXTENSION = '.snake'
-
         if len(argv) < 1:
             print(usage_mode.__doc__)
             print('ERROR: no input file is provided for the compile')
@@ -212,6 +240,7 @@ if __name__ == '__main__':
         program = load_program_from_file(program_path);
         basename = path.basename(program_path)
 
+        DOT_SNAKE_EXTENSION = '.snake'
         if basename.endswith(DOT_SNAKE_EXTENSION):
             basename = basename[:-len(DOT_SNAKE_EXTENSION)]
 

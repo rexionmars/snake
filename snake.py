@@ -35,7 +35,7 @@ OP_END = iota()
 
 # Count operations in stack
 COUNT_OPS = iota()
-print(f'OPERATIONS IN STACK: [{Fore.RED}{COUNT_OPS}{Style.RESET_ALL}]\n')
+print(f'OPERATIONS IN STACK: [{Fore.RED}{COUNT_OPS}{Style.RESET_ALL}]')
 
 # Common operations
 def push(x):
@@ -64,12 +64,11 @@ def end_block_code():
 def simulate_program(program: list):
     stack = []
 
-    for ip in range(len(program)):
-        assert COUNT_OPS == 5, 'Exhaustive handling of operations in simulation'
-        operation = program[ip]
+    for addr in range(len(program)):
+        assert COUNT_OPS == 7, 'Exhaustive handling of operations in simulation'
+        operation = program[addr]
 
         if operation[0] == OP_PUSH:
-            print(program[ip])
             stack.append(operation[1])
 
         elif operation[0] == OP_PLUS:
@@ -85,16 +84,22 @@ def simulate_program(program: list):
         elif operation[0] == OP_EQUAL:
             x = stack.pop()
             y = stack.pop()
-            stack.append(int(x == y)) # 1 = True, 0 = False | Default return is True or False
+            stack.append(int(x == y)) # 1 = True, 0 = False -- Default return is True or False
 
-        elif operation[0] == OP_DUMP:
-            x = stack.pop()
-            print(x)
         elif operation[0] == OP_IF:
             x = stack.pop()
             if x == 0:
                 # Jump to end
-                ...
+                assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
+                'have a reference to the end its block.'
+                addr = operation[1]
+
+        elif operation[0] == OP_END:
+            pass
+
+        elif operation[0] == OP_DUMP:
+            x = stack.pop()
+            print(x)
         else:
             assert False, 'unreachable'
 
@@ -220,14 +225,12 @@ def cross_reference_blocks(program: list) -> list:
 
     for addr in range(len(program)):
         operation = program[addr]
-        #print(operation)
 
         assert COUNT_OPS == 7, 'Exhaustive handling of operations in cross_reference_program. '+\
         'Keep in mind that not all of the operations need to be handled in here. Only those '+\
         'form blocks.'
 
         if operation[0] == OP_IF:
-            #print(operation)
             stack.append(addr)
         elif operation[0] == OP_END:
             if_addr = stack.pop()
@@ -258,7 +261,7 @@ def lexer_file(file_parh) -> list:
         ]
 
 def load_program_from_file(file_path) -> list:
-    return [parser_token_as_operation(token) for token in lexer_file(file_path)]
+    return cross_reference_blocks([parser_token_as_operation(token) for token in lexer_file(file_path)])
 
 def usage_mode():
     """Usage: snake <SUBCOMMAND> <ARGS>

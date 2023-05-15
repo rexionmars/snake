@@ -12,7 +12,6 @@ from colorama import Style
 
 colorama_init()
 
-
 iota_counter = 0
 
 def iota(reset = False):
@@ -26,6 +25,7 @@ def iota(reset = False):
 OP_PUSH = iota(True)
 OP_PLUS = iota()
 OP_MINUS = iota()
+OP_EQUAL = iota()
 OP_DUMP = iota()
 COUNT_OPS = iota()
 
@@ -38,14 +38,17 @@ def plus():
 def minus():
     return (OP_MINUS, )
 
+def equal():
+    return (OP_EQUAL, )
+
 def dump():
     return (OP_DUMP, )
 
 def simulate_program(program):
-    stack = []
+    stack: list = []
 
     for operation in program:
-        assert COUNT_OPS == 4, 'Exhaustive handling of operations in simulation'
+        assert COUNT_OPS == 5, 'Exhaustive handling of operations in simulation'
 
         if operation[0] == OP_PUSH:
             stack.append(operation[1])
@@ -60,70 +63,75 @@ def simulate_program(program):
             y = stack.pop()
             stack.append(y - x)
 
+        elif operation[0] == OP_EQUAL:
+            x = stack.pop()
+            y = stack.pop()
+            stack.append(x == y)
+
         elif operation[0] == OP_DUMP:
             x = stack.pop()
             print(x)
-
         else:
             assert False, 'unreachable'
 
 def compile_program(program, out_file_path):
     # Hardcode Dump function
     with open(out_file_path, 'w') as out:
+        out.write('BITS 64\n')
         out.write('segment .text\n')
-        out.write(f'dump:\n')
-        out.write(f'    push    rbp\n')
-        out.write(f'    mov     rbp, rsp\n')
-        out.write(f'    sub     rsp, 64\n')
-        out.write(f'    mov     QWORD [rbp-56], rdi\n')
-        out.write(f'    mov     QWORD [rbp-8], 1\n')
-        out.write(f'    mov     eax, 32\n')
-        out.write(f'    sub     rax, QWORD [rbp-8]\n')
-        out.write(f'    mov     BYTE  [rbp-48+rax], 10\n')
+        out.write('dump:\n')
+        out.write('    push    rbp\n')
+        out.write('    mov     rbp, rsp\n')
+        out.write('    sub     rsp, 64\n')
+        out.write('    mov     QWORD [rbp-56], rdi\n')
+        out.write('    mov     QWORD [rbp-8], 1\n')
+        out.write('    mov     eax, 32\n')
+        out.write('    sub     rax, QWORD [rbp-8]\n')
+        out.write('    mov     BYTE  [rbp-48+rax], 10\n')
         out.write('.L2:\n')
-        out.write(f'    mov     rcx, QWORD [rbp-56]\n')
-        out.write(f'    mov     rdx, -3689348814741910323\n')
-        out.write(f'    mov     rax, rcx\n')
-        out.write(f'    mul     rdx\n')
-        out.write(f'    shr     rdx, 3\n')
-        out.write(f'    mov     rax, rdx\n')
-        out.write(f'    sal     rax, 2\n')
-        out.write(f'    add     rax, rdx\n')
-        out.write(f'    add     rax, rax\n')
-        out.write(f'    sub     rcx, rax\n')
-        out.write(f'    mov     rdx, rcx\n')
-        out.write(f'    mov     eax, edx\n')
-        out.write(f'    lea     edx, [rax+48]\n')
-        out.write(f'    mov     eax, 31\n')
-        out.write(f'    sub     rax, QWORD [rbp-8]\n')
-        out.write(f'    mov     BYTE  [rbp-48+rax], dl\n')
-        out.write(f'    add     QWORD  [rbp-8], 1\n')
-        out.write(f'    mov     rax, QWORD [rbp-56]\n')
-        out.write(f'    mov     rdx, -3689348814741910323\n')
-        out.write(f'    mul     rdx\n')
-        out.write(f'    mov     rax, rdx\n')
-        out.write(f'    shr     rax, 3\n')
-        out.write(f'    mov     QWORD [rbp-56], rax\n')
-        out.write(f'    cmp     QWORD [rbp-56], 0\n')
-        out.write(f'    jne     .L2\n')
-        out.write(f'    mov     eax, 32\n')
-        out.write(f'    sub     rax, QWORD [rbp-8]\n')
-        out.write(f'    lea     rdx, [rbp-48]\n')
-        out.write(f'    lea     rcx, [rdx+rax]\n')
-        out.write(f'    mov     rax, QWORD [rbp-8]\n')
-        out.write(f'    mov     rdx, rax\n')
-        out.write(f'    mov     rsi, rcx\n')
-        out.write(f'    mov     edi, 1\n')
-        out.write(f'    mov     rax, 1\n')
-        out.write(f'    syscall\n')
-        out.write(f'nop\n')
-        out.write(f'leave\n')
-        out.write(f'ret\n')
+        out.write('    mov     rcx, QWORD [rbp-56]\n')
+        out.write('    mov     rdx, -3689348814741910323\n')
+        out.write('    mov     rax, rcx\n')
+        out.write('    mul     rdx\n')
+        out.write('    shr     rdx, 3\n')
+        out.write('    mov     rax, rdx\n')
+        out.write('    sal     rax, 2\n')
+        out.write('    add     rax, rdx\n')
+        out.write('    add     rax, rax\n')
+        out.write('    sub     rcx, rax\n')
+        out.write('    mov     rdx, rcx\n')
+        out.write('    mov     eax, edx\n')
+        out.write('    lea     edx, [rax+48]\n')
+        out.write('    mov     eax, 31\n')
+        out.write('    sub     rax, QWORD [rbp-8]\n')
+        out.write('    mov     BYTE  [rbp-48+rax], dl\n')
+        out.write('    add     QWORD  [rbp-8], 1\n')
+        out.write('    mov     rax, QWORD [rbp-56]\n')
+        out.write('    mov     rdx, -3689348814741910323\n')
+        out.write('    mul     rdx\n')
+        out.write('    mov     rax, rdx\n')
+        out.write('    shr     rax, 3\n')
+        out.write('    mov     QWORD [rbp-56], rax\n')
+        out.write('    cmp     QWORD [rbp-56], 0\n')
+        out.write('    jne     .L2\n')
+        out.write('    mov     eax, 32\n')
+        out.write('    sub     rax, QWORD [rbp-8]\n')
+        out.write('    lea     rdx, [rbp-48]\n')
+        out.write('    lea     rcx, [rdx+rax]\n')
+        out.write('    mov     rax, QWORD [rbp-8]\n')
+        out.write('    mov     rdx, rax\n')
+        out.write('    mov     rsi, rcx\n')
+        out.write('    mov     edi, 1\n')
+        out.write('    mov     rax, 1\n')
+        out.write('    syscall\n')
+        out.write('nop\n')
+        out.write('leave\n')
+        out.write('ret\n')
         out.write('global _start\n')
         out.write('_start:\n')
 
         for operation in program:
-            assert COUNT_OPS == 4, 'Exhaustive handling of operations in compilation'
+            assert COUNT_OPS == 5, 'Exhaustive handling of operations in compilation'
             if operation[0] == OP_PUSH:
                 out.write(f'    ;;-- push {operation[1]} --\n')
                 out.write(f'    push {operation[1]}\n')
@@ -144,7 +152,14 @@ def compile_program(program, out_file_path):
                 out.write('    ;; -- dump --\n')
                 out.write('    pop rdi\n')
                 out.write('    call dump\n')
-
+            elif operation[0] == OP_EQUAL:
+                out.write('    ;; -- equal --\n')
+                out.write('    mov rcx, 0\n')
+                out.write('    mov rdx, 1\n')
+                out.write('    pop rax\n')
+                out.write('    pop rbx\n')
+                out.write('    cmp rax, rbx\n')
+                out.write('    cmove rcx, rdx\n')
             else:
                 assert False, 'unreachable'
 
@@ -154,16 +169,18 @@ def compile_program(program, out_file_path):
 
 def parser_token_as_operation(token):
     (file_path, row, collumn, word) = token
-    assert COUNT_OPS == 4, 'Exhaustive operation handling in parser_token_as_operation'
+    assert COUNT_OPS == 5, 'Exhaustive operation handling in parser_token_as_operation'
     if word == '+':
         return plus()
     elif word == '-':
         return minus()
     elif word == '.':
         return dump()
+    elif word == '=':
+        return equal()
     else:
         try:
-            return push(int(word))
+                return push(int(word))
         except ValueError as err:
             print(f'{file_path}\nreturned [{row}:{collumn}] -> {Fore.RED}{err}{Style.RESET_ALL}')
             exit(1)
@@ -203,7 +220,7 @@ def usage_mode():
     """
 
 def call_subcommand(cmd, **kwargs):
-    print('[RUNING] ' + ' '.join(map(shlex.quote, cmd)))
+    print(f'{Fore.YELLOW}[RUNING]{Style.RESET_ALL} ' + ' '.join(map(shlex.quote, cmd)))
     return subprocess.call(cmd, **kwargs)
 
 def uncons(xs):
@@ -244,7 +261,7 @@ if __name__ == '__main__':
         if basename.endswith(DOT_SNAKE_EXTENSION):
             basename = basename[:-len(DOT_SNAKE_EXTENSION)]
 
-        print(f'[INFO] Generating {program_path}')
+        print(f'{Fore.GREEN}[INFO]{Style.RESET_ALL} Generating {program_path}')
         compile_program(program, basename + '.asm')
         call_subcommand(['nasm', '-felf64', basename + '.asm'])
         call_subcommand(['ld', '-o', basename, basename + '.o'])

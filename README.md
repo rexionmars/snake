@@ -34,7 +34,7 @@ $ cd snake
 
 ## Folder Structure
 ```lua
-docs/
+docs/refs/
   |
   +-- Documentations and references
   
@@ -42,18 +42,9 @@ container/
   |
   +-- Standard Library for scripts (temporary)
   
-examples/
-  |
-  +-- This folder contains examples of programs made in SNAKE
-  
 snake.py
   |
   +-- This file is the principal and contain base functions
-  
-outdir/
-  |
-  +-- This folder contains output x86_64 binary generated
-      from assembly
 
 ```
 ## SNAKE usage

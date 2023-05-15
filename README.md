@@ -32,7 +32,7 @@ docs/refs/
   
 container/
   |
-  +-- Standard Library for scripts (temporary)
+  +-- Standard scripts from translate code (temporary)
   
 snake.py
   |

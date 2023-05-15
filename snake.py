@@ -13,8 +13,7 @@ from colorama import Style
 colorama_init()
 
 iota_counter = 0
-
-def iota(reset = False):
+def iota(reset = False) -> int:
     global iota_counter
     if reset:
         iota_counter = 0
@@ -30,7 +29,7 @@ OP_EQUAL = iota()
 OP_DUMP = iota()
 OP_IF = iota()
 
-# Block of code
+# End block of code
 OP_END = iota()
 
 # Count operations in stack
@@ -91,7 +90,7 @@ def simulate_program(program: list):
             if x == 0:
                 # Jump to end
                 assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
-                'have a reference to the end its block.'
+                f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
                 addr = operation[1]
 
         elif operation[0] == OP_END:
@@ -103,8 +102,8 @@ def simulate_program(program: list):
         else:
             assert False, 'unreachable'
 
-def compile_program(program, out_file_path):
-    # Hardcode Dump function
+def compile_program(program: list, out_file_path: str):
+    # Hardcode Dump function, So is temporary
     with open(out_file_path, 'w') as out:
         out.write('BITS 64\n')
         out.write('segment .text\n')
@@ -197,7 +196,7 @@ def compile_program(program, out_file_path):
         out.write('    syscall\n')
 
 def parser_token_as_operation(token):
-    (file_path, row, collumn, word) = token
+    (file_path, row, column, word) = token
     assert COUNT_OPS == 7, 'Exhaustive operation handling in parser_token_as_operation'
 
     if word == '+':
@@ -208,7 +207,7 @@ def parser_token_as_operation(token):
         return dump()
     elif word == '=':
         return equal()
-    elif word == 'if:': # IF block code = 'if {' + '}'
+    elif word == 'if': # IF block code = 'if' + 'end'
         return if_block()
     elif word == 'end':
         return end_block_code()
@@ -216,8 +215,8 @@ def parser_token_as_operation(token):
         try:
             return push(int(word))
         except ValueError as err:
-            print(f'{Fore.YELLOW}Reading:{Style.RESET_ALL} {file_path}\nreturned [{row}:{collumn}]' +
-            f' -> {Fore.RED}{err}{Style.RESET_ALL}')
+            print(f'{Fore.YELLOW}Reading:{Style.RESET_ALL} {file_path}\nreturned [{row}:{column}]' +
+            f' -> {Fore.RED}{err}{Style.RESET_ALL} in Line: {row} and Column: {column}')
             exit(1)
 
 def cross_reference_blocks(program: list) -> list:
@@ -261,7 +260,9 @@ def lexer_file(file_parh) -> list:
         ]
 
 def load_program_from_file(file_path) -> list:
-    return cross_reference_blocks([parser_token_as_operation(token) for token in lexer_file(file_path)])
+    return cross_reference_blocks(
+        [parser_token_as_operation(token) for token in lexer_file(file_path)]
+    )
 
 def usage_mode():
     """Usage: snake <SUBCOMMAND> <ARGS>

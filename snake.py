@@ -66,7 +66,7 @@ def simulate_program(program):
         elif operation[0] == OP_EQUAL:
             x = stack.pop()
             y = stack.pop()
-            stack.append(x == y)
+            stack.append(int(x == y)) # 1 = True, 0 = False | Default return is True or False
 
         elif operation[0] == OP_DUMP:
             x = stack.pop()

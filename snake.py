@@ -238,18 +238,18 @@ def cross_reference_blocks(program: list) -> list:
 
     return program
 
-def find_collumn(line, start, predicate) -> int:
+def find_column(line, start, predicate) -> int:
     while start < len(line) and not predicate(line[start]):
         start += 1
     return start
 
 def lexer_line(line):
-    collumn = find_collumn(line, 0, lambda x: not x.isspace())
+    column = find_column(line, 0, lambda x: not x.isspace())
 
-    while collumn < len(line):
-        collumn_end = find_collumn(line, collumn, lambda x: x.isspace())
-        yield (collumn, line[collumn:collumn_end])
-        collumn = find_collumn(line, collumn_end, lambda x: not x.isspace())
+    while column < len(line):
+        column_end = find_column(line, column, lambda x: x.isspace())
+        yield (column, line[column:column_end])
+        column = find_column(line, column_end, lambda x: not x.isspace())
 
 def lexer_file(file_parh) -> list:
     with open(file_parh, 'r') as file:

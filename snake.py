@@ -22,13 +22,22 @@ def iota(reset = False):
     iota_counter += 1
     return result
 
+# Common declarations
 OP_PUSH = iota(True)
 OP_PLUS = iota()
 OP_MINUS = iota()
 OP_EQUAL = iota()
 OP_DUMP = iota()
-COUNT_OPS = iota()
+OP_IF = iota()
 
+# Block of code
+OP_END = iota()
+
+# Count operations in stack
+COUNT_OPS = iota()
+print(f'OPERATIONS IN STACK: [{Fore.RED}{COUNT_OPS}{Style.RESET_ALL}]\n')
+
+# Common operations
 def push(x):
     return (OP_PUSH, x)
 
@@ -44,13 +53,23 @@ def equal():
 def dump():
     return (OP_DUMP, )
 
-def simulate_program(program):
-    stack: list = []
+def if_block():
+    return (OP_IF, )
 
-    for operation in program:
+# Close block of code
+# TODO: Next implementetaion this is {}
+def end_block_code():
+    return (OP_END, )
+
+def simulate_program(program: list):
+    stack = []
+
+    for ip in range(len(program)):
         assert COUNT_OPS == 5, 'Exhaustive handling of operations in simulation'
+        operation = program[ip]
 
         if operation[0] == OP_PUSH:
+            print(program[ip])
             stack.append(operation[1])
 
         elif operation[0] == OP_PLUS:
@@ -71,6 +90,11 @@ def simulate_program(program):
         elif operation[0] == OP_DUMP:
             x = stack.pop()
             print(x)
+        elif operation[0] == OP_IF:
+            x = stack.pop()
+            if x == 0:
+                # Jump to end
+                ...
         else:
             assert False, 'unreachable'
 
@@ -169,7 +193,8 @@ def compile_program(program, out_file_path):
 
 def parser_token_as_operation(token):
     (file_path, row, collumn, word) = token
-    assert COUNT_OPS == 5, 'Exhaustive operation handling in parser_token_as_operation'
+    assert COUNT_OPS == 7, 'Exhaustive operation handling in parser_token_as_operation'
+
     if word == '+':
         return plus()
     elif word == '-':
@@ -178,12 +203,38 @@ def parser_token_as_operation(token):
         return dump()
     elif word == '=':
         return equal()
+    elif word == 'if:': # IF block code = 'if {' + '}'
+        return if_block()
+    elif word == 'end':
+        return end_block_code()
     else:
         try:
-                return push(int(word))
+            return push(int(word))
         except ValueError as err:
-            print(f'{file_path}\nreturned [{row}:{collumn}] -> {Fore.RED}{err}{Style.RESET_ALL}')
+            print(f'{Fore.YELLOW}Reading:{Style.RESET_ALL} {file_path}\nreturned [{row}:{collumn}]' +
+            f' -> {Fore.RED}{err}{Style.RESET_ALL}')
             exit(1)
+
+def cross_reference_blocks(program: list) -> list:
+    stack = []
+
+    for addr in range(len(program)):
+        operation = program[addr]
+        #print(operation)
+
+        assert COUNT_OPS == 7, 'Exhaustive handling of operations in cross_reference_program. '+\
+        'Keep in mind that not all of the operations need to be handled in here. Only those '+\
+        'form blocks.'
+
+        if operation[0] == OP_IF:
+            #print(operation)
+            stack.append(addr)
+        elif operation[0] == OP_END:
+            if_addr = stack.pop()
+            assert program[if_addr][0] == OP_IF, 'End can only IF blocks'
+            program[if_addr] = (OP_IF, addr)
+
+    return program
 
 def find_collumn(line, start, predicate) -> int:
     while start < len(line) and not predicate(line[start]):
@@ -198,7 +249,7 @@ def lexer_line(line):
         yield (collumn, line[collumn:collumn_end])
         collumn = find_collumn(line, collumn_end, lambda x: not x.isspace())
 
-def lexer_file(file_parh):
+def lexer_file(file_parh) -> list:
     with open(file_parh, 'r') as file:
         return [
             (file_parh, row, col, token)
@@ -206,7 +257,7 @@ def lexer_file(file_parh):
             for (col, token) in lexer_line(line)
         ]
 
-def load_program_from_file(file_path):
+def load_program_from_file(file_path) -> list:
     return [parser_token_as_operation(token) for token in lexer_file(file_path)]
 
 def usage_mode():
@@ -219,11 +270,11 @@ def usage_mode():
                         a executable binary x86_64 Linux
     """
 
-def call_subcommand(cmd, **kwargs):
+def call_subcommand(cmd, **kwargs) -> int:
     print(f'{Fore.YELLOW}[RUNING]{Style.RESET_ALL} ' + ' '.join(map(shlex.quote, cmd)))
     return subprocess.call(cmd, **kwargs)
 
-def uncons(xs):
+def uncons(xs) -> tuple:
     return (xs[0], xs[1:])
 
 if __name__ == '__main__':

@@ -82,4 +82,4 @@ Example 2: subtrac two numbers
 |    DUMP    |    .   |   DUMP |
 
 ## Contributors
-![GitHub Contributors Image](https://contrib.rocks/image?repo=rexionmars/snake)
+![GitHub Contributors Image](https://contrib.rocks/image?repo=rexionmars/snake-lang)

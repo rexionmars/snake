@@ -63,27 +63,32 @@ def end_block_code():
 def simulate_program(program: list):
     stack = []
 
-    for addr in range(len(program)):
+    addr = 0
+    while addr < len(program):
         assert COUNT_OPS == 7, 'Exhaustive handling of operations in simulation'
         operation = program[addr]
 
         if operation[0] == OP_PUSH:
             stack.append(operation[1])
+            addr += 1
 
         elif operation[0] == OP_PLUS:
             x = stack.pop()
             y = stack.pop()
             stack.append(x + y)
+            addr += 1
 
         elif operation[0] == OP_MINUS:
             x = stack.pop()
             y = stack.pop()
             stack.append(y - x)
+            addr += 1
 
         elif operation[0] == OP_EQUAL:
             x = stack.pop()
             y = stack.pop()
             stack.append(int(x == y)) # 1 = True, 0 = False -- Default return is True or False
+            addr += 1
 
         elif operation[0] == OP_IF:
             x = stack.pop()
@@ -92,13 +97,17 @@ def simulate_program(program: list):
                 assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
                 f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
                 addr = operation[1]
+            else:
+                addr += 1
 
         elif operation[0] == OP_END:
+            addr += 1
             pass
 
         elif operation[0] == OP_DUMP:
             x = stack.pop()
             print(x)
+            addr += 1
         else:
             assert False, 'unreachable'
 
@@ -157,6 +166,7 @@ def compile_program(program: list, out_file_path: str):
         out.write('ret\n')
         out.write('global _start\n')
         out.write('_start:\n')
+        ip = 0
 
         for operation in program:
             assert COUNT_OPS == 5, 'Exhaustive handling of operations in compilation'

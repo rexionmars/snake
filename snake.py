@@ -60,6 +60,7 @@ def if_block():
 def end_block_code():
     return (OP_END, )
 
+# Simulate the program without compiler 
 def simulate_program(program: list):
     stack = []
 
@@ -111,6 +112,7 @@ def simulate_program(program: list):
         else:
             assert False, 'unreachable'
 
+# Compile the program for machine code
 def compile_program(program: list, out_file_path: str):
     # Hardcode Dump function, So is temporary
     with open(out_file_path, 'w') as out:
@@ -166,38 +168,49 @@ def compile_program(program: list, out_file_path: str):
         out.write('ret\n')
         out.write('global _start\n')
         out.write('_start:\n')
-        ip = 0
 
-        for operation in program:
-            assert COUNT_OPS == 5, 'Exhaustive handling of operations in compilation'
+        # Translate the program for machine code
+        for addr in range(len(program)):
+            operation = program[addr]
+            assert COUNT_OPS == 7, 'Exhaustive handling of operations in compilation'
             if operation[0] == OP_PUSH:
-                out.write(f'    ;;-- push {operation[1]} --\n')
-                out.write(f'    push {operation[1]}\n')
+                out.write(f'   ; -- push {operation[1]} --\n')
+                out.write(f'   push {operation[1]}\n')
 
             elif operation[0] == OP_PLUS:
-                out.write('    ;;-- plus --\n')
+                out.write('    ; -- plus --\n')
                 out.write('    pop rax\n')
                 out.write('    pop rbx\n')
                 out.write('    add rax, rbx\n')
                 out.write('    push rax\n')
             elif operation[0] == OP_MINUS:
-                out.write('    ;;-- minus --\n')
+                out.write('    ; -- minus --\n')
                 out.write('    pop rax\n')
                 out.write('    pop rbx\n')
                 out.write('    sub rbx, rax\n')
                 out.write('    push rbx\n')
             elif operation[0] == OP_DUMP:
-                out.write('    ;; -- dump --\n')
+                out.write('    ; -- dump --\n')
                 out.write('    pop rdi\n')
                 out.write('    call dump\n')
             elif operation[0] == OP_EQUAL:
-                out.write('    ;; -- equal --\n')
+                out.write('    ; -- equal --\n')
                 out.write('    mov rcx, 0\n')
                 out.write('    mov rdx, 1\n')
                 out.write('    pop rax\n')
                 out.write('    pop rbx\n')
                 out.write('    cmp rax, rbx\n')
                 out.write('    cmove rcx, rdx\n')
+                out.write('    push rcx\n')
+            elif operation[0] == OP_IF:
+                out.write('    ; -- if --\n')
+                out.write('    pop rax\n')
+                out.write('    test rax, rax\n')
+                assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
+                f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
+                out.write('    jz addr_%d\n' % operation[1])
+            elif operation[0] == OP_END:
+                out.write('addr_%d:\n' % addr)
             else:
                 assert False, 'unreachable'
 
@@ -205,6 +218,7 @@ def compile_program(program: list, out_file_path: str):
         out.write('    mov rdi, 0\n')
         out.write('    syscall\n')
 
+# Checkout tokenization
 def parser_token_as_operation(token):
     (file_path, row, column, word) = token
     assert COUNT_OPS == 7, 'Exhaustive operation handling in parser_token_as_operation'

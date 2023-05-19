@@ -21,7 +21,7 @@ def iota(reset = False) -> int:
     iota_counter += 1
     return result
 
-# Common declarations
+# Common operations in stack
 OP_PUSH = iota(True)
 OP_PLUS = iota()
 OP_MINUS = iota()
@@ -36,7 +36,7 @@ OP_END = iota()
 COUNT_OPS = iota()
 print(f'OPERATIONS IN STACK: [{Fore.RED}{COUNT_OPS}{Style.RESET_ALL}]')
 
-# Common operations
+# Common operations declarations
 def push(x):
     return (OP_PUSH, x)
 
@@ -215,7 +215,7 @@ def parser_token_as_operation(token):
         try:
             return push(int(word))
         except ValueError as err:
-            print(f'{Fore.YELLOW}Reading:{Style.RESET_ALL} {file_path}\nreturned [{row}:{column}]' +
+            print(f'{Fore.YELLOW}[Reading]{Style.RESET_ALL} {file_path}\nreturned [{row}:{column}]' +
             f' -> {Fore.RED}{err}{Style.RESET_ALL} in Line: {row} and Column: {column}')
             exit(1)
 
@@ -256,13 +256,11 @@ def lexer_file(file_parh) -> list:
         return [
             (file_parh, row, col, token)
             for (row, line) in enumerate(file.readlines())
-            for (col, token) in lexer_line(line)
-        ]
+            for (col, token) in lexer_line(line)]
 
 def load_program_from_file(file_path) -> list:
     return cross_reference_blocks(
-        [parser_token_as_operation(token) for token in lexer_file(file_path)]
-    )
+        [parser_token_as_operation(token) for token in lexer_file(file_path)])
 
 def usage_mode():
     """Usage: snake <SUBCOMMAND> <ARGS>

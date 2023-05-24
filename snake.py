@@ -15,6 +15,7 @@ colorama_init()
 iota_counter = 0
 def iota(reset = False) -> int:
     global iota_counter
+
     if reset:
         iota_counter = 0
     result = iota_counter
@@ -28,6 +29,7 @@ OP_MINUS = iota()
 OP_EQUAL = iota()
 OP_DUMP = iota()
 OP_IF = iota()
+OP_ELSE = iota()
 
 # End block of code
 OP_END = iota()
@@ -55,6 +57,9 @@ def dump():
 def if_block():
     return (OP_IF, )
 
+def else_op():
+    return (OP_ELSE, )
+
 # Close block of code
 # TODO: Next implementetaion this is {}
 def end_block_code():
@@ -63,10 +68,10 @@ def end_block_code():
 # Simulate the program without compiler 
 def simulate_program(program: list):
     stack = []
-
     addr = 0
+
     while addr < len(program):
-        assert COUNT_OPS == 7, 'Exhaustive handling of operations in simulation'
+        assert COUNT_OPS == 8, 'Exhaustive handling of operations in simulation'
         operation = program[addr]
 
         if operation[0] == OP_PUSH:
@@ -91,19 +96,23 @@ def simulate_program(program: list):
             stack.append(int(x == y)) # 1 = True, 0 = False -- Default return is True or False
             addr += 1
 
+        # Bug here
         elif operation[0] == OP_IF:
             x = stack.pop()
             if x == 0:
-                # Jump to end
                 assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
                 f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
                 addr = operation[1]
             else:
                 addr += 1
 
+        elif operation[0] == OP_ELSE:
+            assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
+            f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
+            addr = operation[1]
+
         elif operation[0] == OP_END:
             addr += 1
-            pass
 
         elif operation[0] == OP_DUMP:
             x = stack.pop()
@@ -172,7 +181,7 @@ def compile_program(program: list, out_file_path: str):
         # Translate the program for machine code
         for addr in range(len(program)):
             operation = program[addr]
-            assert COUNT_OPS == 7, 'Exhaustive handling of operations in compilation'
+            assert COUNT_OPS == 8, 'Exhaustive handling of operations in compilation'
             if operation[0] == OP_PUSH:
                 out.write(f'   ; -- push {operation[1]} --\n')
                 out.write(f'   push {operation[1]}\n')
@@ -221,7 +230,7 @@ def compile_program(program: list, out_file_path: str):
 # Checkout tokenization
 def parser_token_as_operation(token):
     (file_path, row, column, word) = token
-    assert COUNT_OPS == 7, 'Exhaustive operation handling in parser_token_as_operation'
+    assert COUNT_OPS == 8, 'Exhaustive operation handling in parser_token_as_operation'
 
     if word == '+':
         return plus()
@@ -235,6 +244,8 @@ def parser_token_as_operation(token):
         return if_block()
     elif word == 'end':
         return end_block_code()
+    elif word == 'else':
+        return else_op()
     else:
         try:
             return push(int(word))
@@ -249,16 +260,25 @@ def cross_reference_blocks(program: list) -> list:
     for addr in range(len(program)):
         operation = program[addr]
 
-        assert COUNT_OPS == 7, 'Exhaustive handling of operations in cross_reference_program. '+\
+        assert COUNT_OPS == 8, 'Exhaustive handling of operations in cross_reference_program. '+\
         'Keep in mind that not all of the operations need to be handled in here. Only those '+\
         'form blocks.'
 
         if operation[0] == OP_IF:
             stack.append(addr)
-        elif operation[0] == OP_END:
+
+        elif operation[0] == OP_ELSE:
             if_addr = stack.pop()
-            assert program[if_addr][0] == OP_IF, 'End can only IF blocks'
-            program[if_addr] = (OP_IF, addr)
+            assert program[if_addr][0] == OP_IF, '`else` can only close if block'
+            program[if_addr] = (OP_IF, addr + 1)
+            stack.append(addr)
+
+        elif operation[0] == OP_END:
+            block_addr = stack.pop()
+            if program[block_addr][0] == OP_IF or program[block_addr][0] == OP_ELSE:
+                program[block_addr] = (program[block_addr][0], addr)
+            else:
+                assert program[block_addr][0] == OP_IF, '`end` can only close `if-else` block'
 
     return program
 

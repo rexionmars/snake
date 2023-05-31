@@ -13,7 +13,7 @@ from colorama import Style
 colorama_init()
 
 iota_counter = 0
-def iota(reset = False) -> int:
+def iota(reset = False):
     global iota_counter
 
     if reset:
@@ -66,7 +66,7 @@ def end_block_code():
     return (OP_END, )
 
 # Simulate the program without compiler 
-def simulate_program(program: list):
+def simulate_program(program):
     stack = []
     addr = 0
 
@@ -122,7 +122,7 @@ def simulate_program(program: list):
             assert False, 'unreachable'
 
 # Compile the program for machine code
-def compile_program(program: list, out_file_path: str):
+def compile_program(program, out_file_path):
     # Hardcode Dump function, So is temporary
     with open(out_file_path, 'w') as out:
         out.write('BITS 64\n')
@@ -254,7 +254,7 @@ def parser_token_as_operation(token):
             f' -> {Fore.RED}{err}{Style.RESET_ALL} in Line: {row} and Column: {column}')
             exit(1)
 
-def cross_reference_blocks(program: list) -> list:
+def cross_reference_blocks(program):
     stack = []
 
     for addr in range(len(program)):
@@ -282,7 +282,7 @@ def cross_reference_blocks(program: list) -> list:
 
     return program
 
-def find_column(line, start, predicate) -> int:
+def find_column(line, start, predicate):
     while start < len(line) and not predicate(line[start]):
         start += 1
     return start
@@ -295,14 +295,14 @@ def lexer_line(line):
         yield (column, line[column:column_end])
         column = find_column(line, column_end, lambda x: not x.isspace())
 
-def lexer_file(file_parh) -> list:
+def lexer_file(file_parh):
     with open(file_parh, 'r') as file:
         return [
             (file_parh, row, col, token)
             for (row, line) in enumerate(file.readlines())
             for (col, token) in lexer_line(line)]
 
-def load_program_from_file(file_path) -> list:
+def load_program_from_file(file_path):
     return cross_reference_blocks(
         [parser_token_as_operation(token) for token in lexer_file(file_path)])
 
@@ -316,11 +316,11 @@ def usage_mode():
                         a executable binary x86_64 Linux
     """
 
-def call_subcommand(cmd, **kwargs) -> int:
+def call_subcommand(cmd, **kwargs):
     print(f'{Fore.YELLOW}[RUNING]{Style.RESET_ALL} ' + ' '.join(map(shlex.quote, cmd)))
     return subprocess.call(cmd, **kwargs)
 
-def uncons(xs) -> tuple:
+def uncons(xs):
     return (xs[0], xs[1:])
 
 if __name__ == '__main__':

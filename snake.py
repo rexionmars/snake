@@ -251,7 +251,7 @@ def parser_token_as_operation(token):
             return push(int(word))
         except ValueError as err:
             print(f'{Fore.YELLOW}[Reading]{Style.RESET_ALL} {file_path}\nreturned [{row}:{column}]' +
-            f' -> {Fore.RED}{err}{Style.RESET_ALL} in Line: {row} and Column: {column}')
+            f' -> {Fore.RED}{err}{Style.RESET_ALL} in Line: {row + 1} and Column: {column}')
             exit(1)
 
 def cross_reference_blocks(program):
@@ -309,10 +309,9 @@ def load_program_from_file(file_path):
 def usage_mode():
     """Usage: snake <SUBCOMMAND> <ARGS>
     SUBCOMMANDS:
-    --preview   <file>  Simulate the program without
-                        compile
+    run       <file>  Simulate the program without compile
 
-    --compile   <file>  Compile the program and generate
+    compile   <file>  Compile the program and generate
                         a executable binary x86_64 Linux
     """
 
@@ -334,7 +333,7 @@ if __name__ == '__main__':
         exit(1)
     (subcommand, argv) = uncons(argv)
 
-    if subcommand == '--preview':
+    if subcommand == 'run':
         if len(argv) < 1:
             usage_mode()
             print('ERROR: no input file is provided for the simulate')
@@ -344,7 +343,7 @@ if __name__ == '__main__':
         program = load_program_from_file(program_path);
         simulate_program(program)
 
-    elif subcommand == '--compile':
+    elif subcommand == 'compile':
         if len(argv) < 1:
             print(usage_mode.__doc__)
             print('ERROR: no input file is provided for the compile')

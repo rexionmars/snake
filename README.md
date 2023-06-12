@@ -72,7 +72,12 @@ Example 2: subtrac two numbers
 ```sh
 13 9 - .
 ```
-|
+Example 3: if condition
+```sh
+17 1 + 18 = if
+    700 .
+end
+```
 
 ## Contributors
 ![GitHub Contributors Image](https://contrib.rocks/image?repo=rexionmars/snake-lang)

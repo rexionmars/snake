@@ -47,11 +47,11 @@ $ ./snake.py
 ```
 simulate program
 ```sh
-$ ./snake.py --preview <args>
+$ ./snake.py run <args>
 ```
-or compile the program
+or compile the program x86_64 Linux
 ```sh
-$ ./snake.py --compile <args>
+$ ./snake.py compile <args>
 ```
 this will generate an x86_64 Linux executable, in the tests folder
 ```sh
@@ -72,14 +72,7 @@ Example 2: subtrac two numbers
 ```sh
 13 9 - .
 ```
-
-## Basics Operations
-| OPERATIONS | SYMBOL | ACTION |
-|------------|--------|--------|
-|    PLUS    |    +   |   SUN  |
-|    PUSH    |        |   PUSH |
-|    MINUS   |    -   |   SUB  |
-|    DUMP    |    .   |   DUMP |
+|
 
 ## Contributors
 ![GitHub Contributors Image](https://contrib.rocks/image?repo=rexionmars/snake-lang)

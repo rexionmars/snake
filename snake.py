@@ -9,7 +9,6 @@ from os import path
 from colorama import init as colorama_init
 from colorama import Fore
 from colorama import Style
-
 colorama_init()
 
 iota_counter = 0
@@ -30,8 +29,6 @@ OP_EQUAL = iota()
 OP_DUMP = iota()
 OP_IF = iota()
 OP_ELSE = iota()
-
-# End block of code
 OP_END = iota()
 
 # Count operations in stack
@@ -39,31 +36,14 @@ COUNT_OPS = iota()
 print(f'OPERATIONS IN STACK: [{Fore.RED}{COUNT_OPS}{Style.RESET_ALL}]')
 
 # Common operations declarations
-def push(x):
-    return (OP_PUSH, x)
-
-def plus():
-    return (OP_PLUS, )
-
-def minus():
-    return (OP_MINUS, )
-
-def equal():
-    return (OP_EQUAL, )
-
-def dump():
-    return (OP_DUMP, )
-
-def if_block():
-    return (OP_IF, )
-
-def else_op():
-    return (OP_ELSE, )
-
-# Close block of code
-# TODO: Next implementetaion this is {}
-def end_block_code():
-    return (OP_END, )
+push = lambda x: (OP_PUSH, x)
+plus = lambda: (OP_PLUS, )
+minus = lambda: (OP_MINUS, )
+equal = lambda: (OP_EQUAL, )
+dump = lambda: (OP_DUMP, )
+if_block = lambda: (OP_IF, )
+else_op = lambda: (OP_ELSE, )
+end_block_code = lambda: (OP_END, )
 
 # Simulate the program without compiler 
 def simulate_program(program):
@@ -77,26 +57,21 @@ def simulate_program(program):
         if operation[0] == OP_PUSH:
             stack.append(operation[1])
             addr += 1
-
         elif operation[0] == OP_PLUS:
             x = stack.pop()
             y = stack.pop()
             stack.append(x + y)
             addr += 1
-
         elif operation[0] == OP_MINUS:
             x = stack.pop()
             y = stack.pop()
             stack.append(y - x)
             addr += 1
-
         elif operation[0] == OP_EQUAL:
             x = stack.pop()
             y = stack.pop()
             stack.append(int(x == y)) # 1 = True, 0 = False -- Default return is True or False
             addr += 1
-
-        # Bug here
         elif operation[0] == OP_IF:
             x = stack.pop()
             if x == 0:
@@ -105,15 +80,12 @@ def simulate_program(program):
                 addr = operation[1]
             else:
                 addr += 1
-
         elif operation[0] == OP_ELSE:
             assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
             f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
             addr = operation[1]
-
         elif operation[0] == OP_END:
             addr += 1
-
         elif operation[0] == OP_DUMP:
             x = stack.pop()
             print(x)
@@ -318,7 +290,7 @@ def usage_mode():
     run       <file>  Simulate the program without compile
 
     compile   <file>  Compile the program and generate
-                        a executable binary x86_64 Linux
+                      a executable binary x86_64 Linux
     """
 
 def call_subcommand(cmd, **kwargs):

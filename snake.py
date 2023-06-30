@@ -218,6 +218,12 @@ def compile_program(program, out_file_path):
                 assert len(operation) >= 2, f'{Fore.RED}`if`{Style.RESET_ALL} instruction does not '+\
                 f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
                 out.write('    jz addr_%d\n' % operation[1])
+            elif operation[0] == OP_ELSE:
+                out.write("    ;; -- else --\n")
+                assert len(operation) >= 2, f'{Fore.RED}`else`{Style.RESET_ALL} instruction does not '+\
+                f'have a reference to the end its block. Please call {Fore.YELLOW}cross_reference_blocks(){Style.RESET_ALL}'
+                out.write("    jmp addr_{}\n".format(operation[1]))
+                out.write('addr_{}:\n'.format((addr + 1)))
             elif operation[0] == OP_END:
                 out.write('addr_%d:\n' % addr)
             else:
